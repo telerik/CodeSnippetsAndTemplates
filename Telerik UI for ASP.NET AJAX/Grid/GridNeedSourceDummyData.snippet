@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<CodeSnippets  xmlns="http://schemas.microsoft.com/VisualStudio/2005/CodeSnippet">
+  <CodeSnippet Format="1.0.0">
+    <Header>
+      <Title>needsource</Title>
+      <Shortcut>needsource</Shortcut>
+      <Description>Code snippet for needsource statement</Description>
+      <Author>Progress</Author>
+      <SnippetTypes>
+        <SnippetType>Expansion</SnippetType>
+        <SnippetType>SurroundsWith</SnippetType>
+      </SnippetTypes>
+    </Header>
+    <Snippet>
+      <Code Language="csharp">
+        <![CDATA[ protected void RadGrid1_NeedDataSource(object sender, GridNeedDataSourceEventArgs e)
+    {
+        (sender as RadGrid).DataSource = GetGridSource(); $end$
+    }
+    private DataTable GetGridSource()
+    {
+        DataTable dataTable = new DataTable();
+
+        DataColumn column = new DataColumn();
+        column.DataType = Type.GetType("System.Int32");
+        column.ColumnName = "OrderID";
+        dataTable.Columns.Add(column);
+
+        column = new DataColumn();
+        column.DataType = Type.GetType("System.DateTime");
+        column.ColumnName = "OrderDate";
+        dataTable.Columns.Add(column);
+
+        column = new DataColumn();
+        column.DataType = Type.GetType("System.Decimal");
+        column.ColumnName = "Freight";
+        dataTable.Columns.Add(column);
+
+        column = new DataColumn();
+        column.DataType = Type.GetType("System.String");
+        column.ColumnName = "ShipName";
+        dataTable.Columns.Add(column);
+
+        column = new DataColumn();
+        column.DataType = Type.GetType("System.String");
+        column.ColumnName = "ShipCountry";
+        dataTable.Columns.Add(column);
+
+        DataColumn[] PrimaryKeyColumns = new DataColumn[1];
+        PrimaryKeyColumns[0] = dataTable.Columns["OrderID"];
+        dataTable.PrimaryKey = PrimaryKeyColumns;
+
+        for (int i = 0; i <= 80; i++)
+        {
+            DataRow row = dataTable.NewRow();
+            row["OrderID"] = i + 1;
+            row["OrderDate"] = DateTime.Now;
+            row["Freight"] = (i + 1) + (i + 1) * 0.1 + (i + 1) * 0.01;
+            row["ShipName"] = "Name " + (i + 1);
+            row["ShipCountry"] = "Country " + (i + 1);
+
+            dataTable.Rows.Add(row);
+        }
+
+        return dataTable;
+    }]]>
+      </Code>
+	<Imports>  
+		<Import>  
+			<Namespace>System.Data</Namespace>  
+		</Import>  
+		<Import>  
+			<Namespace>Telerik.Web.UI</Namespace>  
+		</Import>  
+	</Imports> 
+    </Snippet>
+  </CodeSnippet>
+</CodeSnippets>
