@@ -4,10 +4,10 @@
 
 | Shortcut | Language| Description |
 | --- | --- | --- |
-| [`radgridneed`](#RadGrid-control-with-NeedDataSource) | HTML | RadGrid control markup with NeedDataSource handler |
-| [`radgrid`](#RadGrid-control-with-SqlDataSource) | HTML | RadGrid control markup with SqlDataSource|
-| [`needsource`](#CS-NeedSource-event-handler-with-dummy-data) | C# | RadGrid NeedSource event handler with DataTable with dummy data in C# |
-| [`vbneedsource`](#VB-NeedSource-event-handler-with-dummy-data) | VB | RadGrid NeedSource event handler with DataTable with dummy data in VB|
+| [`radgridneed`](#radgrid-control-with-needdatasource) | HTML | RadGrid control markup with NeedDataSource handler |
+| [`radgrid`](#radgrid-control-with-sqldatasource) | HTML | RadGrid control markup with SqlDataSource|
+| [`needsource`](#cs-needsource-event-handler-with-dummy-data) | C# | RadGrid NeedSource event handler with DataTable with dummy data in C# |
+| [`vbneedsource`](#vb-needsource-event-handler-with-dummy-data) | VB | RadGrid NeedSource event handler with DataTable with dummy data in VB|
 
 ## Markup
 
