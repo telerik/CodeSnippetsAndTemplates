@@ -14,10 +14,10 @@
 ### RadGrid control with NeedDataSource
 - shortcut: radgridneed
 - filename: RadGridNeedSourceMarkup.snippet
-- default destination: 'C:\Users\{USERNAME}\Documents\Visual Studio 2015\Code Snippets\Visual Web Developer\My HTML Snippets'
+- default destination: 'C:\Users\\{USERNAME}\Documents\Visual Studio 2015\Code Snippets\Visual Web Developer\My HTML Snippets'
 
 <details>
-<summary>Generated code</summary>
+<summary>Generated code (Click here to expand)</summary>
 
 ```html
 <telerik:RadGrid ID="RadGrid1" runat="server" AllowPaging="True" CellSpacing="0"
@@ -54,10 +54,10 @@
 ### RadGrid control with SqlDataSource
 - shortcut: radgrid
 - filename: RadGridSqlDataSource.snippet
-- default destination: 'C:\Users\{USERNAME}\Documents\Visual Studio 2015\Code Snippets\Visual Web Developer\My HTML Snippets'
+- default destination: 'C:\Users\\{USERNAME}\Documents\Visual Studio 2015\Code Snippets\Visual Web Developer\My HTML Snippets'
 
 <details>
-<summary>Generated code</summary>
+<summary>Generated code (Click here to expand)</summary>
 
 ```html
 <telerik:RadGrid ID="RadGrid1" runat="server" AllowPaging="True" CellSpacing="0"
@@ -101,10 +101,10 @@
 ### CS NeedSource event handler with dummy data
 - shortcut: needsource
 - filename: GridNeedSourceDummyData.snippet
-- default destination: 'C:\Users\{USERNAME}\Documents\Visual Studio 2015\Code Snippets\Visual C#\My Code Snippets'
+- default destination: 'C:\Users\\{USERNAME}\Documents\Visual Studio 2015\Code Snippets\Visual C#\My Code Snippets'
 
 <details>
-<summary>Generated code</summary>
+<summary>Generated code (Click here to expand)</summary>
 
 ```cs
 protected void RadGrid1_NeedDataSource(object sender, GridNeedDataSourceEventArgs e)
@@ -167,10 +167,10 @@ private DataTable GetGridSource()
 ### VB NeedSource event handler with dummy data 
 - shortcut: vbneedsource
 - filename: GridVBNeedDataSource.snippet
-- default destination: 'C:\Users\{USERNAME}\Documents\Visual Studio 2015\Code Snippets\Visual Basic\My Code Snippets'
+- default destination: 'C:\Users\\{USERNAME}\Documents\Visual Studio 2015\Code Snippets\Visual Basic\My Code Snippets'
 
 <details>
-<summary>Generated code</summary>
+<summary>Generated code (Click here to expand)</summary>
 
 ```vb
 Protected Sub RadGrid1_NeedDataSource(sender As Object, e As GridNeedDataSourceEventArgs)
