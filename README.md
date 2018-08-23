@@ -1,5 +1,7 @@
 # CodeSnippetsAndTemplates
-This repository includes mainly custom shortcut code snippets and some templates for the Telerik and Kendo UI controls/widgets 
+This repository includes mainly custom shortcut code snippets and some templates for the Telerik and Kendo UI controls/widgets.
+
+To check all Telerik AJAX controls that have custom shortcuts available, check [Create Sample markup snippets for all Telerik controls](https://github.com/telerik/CodeSnippetsAndTemplates/issues/3) issue.
 
 ## What are the "snippets" and how to use them
 
