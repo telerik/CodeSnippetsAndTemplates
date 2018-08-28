@@ -4,7 +4,7 @@
 
 | Shortcut | Language| Description |
 | --- | --- | --- |
-| [`radwizard`](#wizard-control-with-steps) | HTML | TabStrip control markup with related MultiPage control |
+| [`radwizard`](#wizard-control-with-steps) | HTML | Wizard control markup with steps control |
 
 ## Markup
 
