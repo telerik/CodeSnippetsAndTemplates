@@ -8,7 +8,7 @@
 
 ## Markup
 
-### ListBox control with MultiPage
+### ListBox 
 - shortcut: radlistbox
 - filename: radlistbox.snippet
 - default destination: 'C:\Users\\{USERNAME}\Documents\Visual Studio 2015\Code Snippets\Visual Web Developer\My HTML Snippets'
