@@ -1,0 +1,43 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<CodeSnippets  xmlns="http://schemas.microsoft.com/VisualStudio/2005/CodeSnippet">
+  <CodeSnippet Format="1.0.0">
+    <Header>
+      <Title>getdatatablesource</Title>
+      <Shortcut>getdatatablesource</Shortcut>
+      <Description>A sample datatable source</Description>
+      <Author>Peter Milchev</Author>
+      <SnippetTypes>
+        <SnippetType>Expansion</SnippetType>
+        <SnippetType>SurroundsWith</SnippetType>
+      </SnippetTypes>
+    </Header>
+    <Snippet>
+      <Code Language="csharp">
+        <![CDATA[ private DataTable GetDataSource()
+{
+    DataTable dataTable = new DataTable();
+ 
+    dataTable.Columns.Add(new DataColumn("ID", Type.GetType("System.Int32")));
+    dataTable.Columns.Add(new DataColumn("Name", Type.GetType("System.String")));
+ 
+    dataTable.PrimaryKey = new DataColumn[1] { dataTable.Columns["ID"] };
+ 
+    for (int i = 0; i <= 10; i++)
+    {
+        dataTable.Rows.Add(i, "Name " + i);
+    }
+ 
+    return dataTable;
+}]]>
+      </Code>
+	<Imports>  
+		<Import>  
+			<Namespace>System.Data</Namespace>  
+		</Import>  
+		<Import>  
+			<Namespace>Telerik.Web.UI</Namespace>  
+		</Import>  
+	</Imports> 
+    </Snippet>
+  </CodeSnippet>
+</CodeSnippets>

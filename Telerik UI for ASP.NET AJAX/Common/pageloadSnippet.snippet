@@ -1,0 +1,19 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<CodeSnippets
+    xmlns="http://schemas.microsoft.com/VisualStudio/2005/CodeSnippet">
+  <CodeSnippet Format="1.0.0">
+    <Header>
+      <Title>PageLoad JS shortcut</Title>
+      <Shortcut>pageload</Shortcut>
+    </Header>
+    <Snippet>
+      <Code Language="javascript">
+        <![CDATA[function pageLoadHandler() {
+        $selected$ $end$
+        // Sys.Application.remove_load(pageLoadHandler);  
+    } 
+  Sys.Application.add_load(pageLoadHandler);  ]]>
+      </Code>
+    </Snippet>
+  </CodeSnippet>
+</CodeSnippets>
