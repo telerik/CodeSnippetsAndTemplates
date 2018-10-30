@@ -8,6 +8,7 @@
 | [`handlertelerik`](#telerik-client-events-handler) | JS | Markup for a sample Telerik client-side event handler |
 | [`find`](#find) | JS | Markup for the $find() |
 | [`startupscriptregister`](#scriptmanager-registerstartupscript) | C# | Syntax for [executing code from server](https://docs.telerik.com/devtools/aspnet-ajax/controls/window/troubleshooting/executing-javascript-code-from-server#when-using-aspnet-ajax) |
+| [`getdatatablesource`](#simple-datatable-generation) | C# | A method returning simple DataTable with dummy data  |
 
 ## Markup
 
@@ -76,3 +77,33 @@ ScriptManager.RegisterStartupScript(Page, Page.GetType(), "closewindow", scripts
 ```
 
 </details>
+
+### Simple DataTable Generation
+- shortcut: getdatatablesource
+- filename: GetDataTableSource.snippet
+- default destination: 'C:\Users\\{USERNAME}\Documents\Visual Studio 2015\Code Snippets\Visual C#\My Code Snippets'
+
+<details>
+<summary>Generated code (Click here to expand)</summary>
+
+```cs
+private DataTable GetDataSource()
+{
+    DataTable dataTable = new DataTable();
+ 
+    dataTable.Columns.Add(new DataColumn("ID", Type.GetType("System.Int32")));
+    dataTable.Columns.Add(new DataColumn("Name", Type.GetType("System.String")));
+ 
+    dataTable.PrimaryKey = new DataColumn[1] { dataTable.Columns["ID"] };
+ 
+    for (int i = 0; i <= 10; i++)
+    {
+        dataTable.Rows.Add(i, "Name " + i);
+    }
+ 
+    return dataTable;
+}
+```
+
+</details>
+
