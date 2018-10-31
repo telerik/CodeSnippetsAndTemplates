@@ -11,6 +11,12 @@ They are shortcuts that you can write in your editor, press Tab and some code wi
 
 ## How to install them
 
+- Copy the `Code Snippets` folder to `C:\Users\<Username>\Documents\<VS Folder>` folder where `Username` is your PC login and `VS Folder` could be `Visual Studio 2013`, `Visual Studio 2015` or `Visual Studio 2017` depending on the version you have installed.
+
+OR
+
+Use the Code snippets from the `Telerik UI for ASP.NET AJAX` folder and follow the instructions below:
+
 tl;dr
 
 **In Visual Studio, place the \*.snippet file in the folder given in the "default destination" in the README file of the control**
