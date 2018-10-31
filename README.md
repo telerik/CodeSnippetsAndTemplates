@@ -16,7 +16,7 @@ They are shortcuts that you can write in your editor, press Tab and some code wi
 
 **Demos**
 1. [Generate dummy DataSources](needsource-demo.md)
-2. [RadGrid Excel-Like Filtering](needsource-demo.md)
+2. [RadGrid Excel-Like Filtering](radgrid-excel-like-demo.md)
 
 OR
 
