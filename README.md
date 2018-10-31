@@ -12,6 +12,11 @@ They are shortcuts that you can write in your editor, press Tab and some code wi
 ## How to install them
 
 - Copy the `Code Snippets` folder to `C:\Users\<Username>\Documents\<VS Folder>` folder where `Username` is your PC login and `VS Folder` could be `Visual Studio 2013`, `Visual Studio 2015` or `Visual Studio 2017` depending on the version you have installed.
+- Start using the snippets by typing their shortcut name and press `TAB` key.
+
+**Demos**
+1. [Generate dummy DataSources](needsource-demo.md)
+2. [RadGrid Excel-Like Filtering](needsource-demo.md)
 
 OR
 
