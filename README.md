@@ -15,7 +15,7 @@ They are shortcuts that you can write in your editor, press Tab and some code wi
 
 OR
 
-Use the Code snippets from the `Telerik UI for ASP.NET AJAX` folder and follow the instructions below:
+- Use the Code snippets from the `Telerik UI for ASP.NET AJAX` folder and follow the instructions below:
 
 tl;dr
 
