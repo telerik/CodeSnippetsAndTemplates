@@ -1,0 +1,30 @@
+﻿<CodeSnippet Format="1.1.0" xmlns="http://schemas.microsoft.com/VisualStudio/2005/CodeSnippet">
+  <Header>
+    <Title>Initialize Scripts</Title>
+    <Author>Progress</Author>
+    <Shortcut>init</Shortcut>
+    <Description>Code snippets for RadScriptManager and RadAjaxManager markup</Description>
+    <SnippetTypes>
+      <SnippetType>Expansion</SnippetType>
+    </SnippetTypes>
+  </Header>
+  <Snippet>
+    <Code Language="html"><![CDATA[
+      <telerik:RadScriptManager ID="RadScriptManager1" runat="server">
+        <Scripts>
+          <asp:ScriptReference Assembly="Telerik.Web.UI" Name="Telerik.Web.UI.Common.Core.js" />
+          <asp:ScriptReference Assembly="Telerik.Web.UI" Name="Telerik.Web.UI.Common.jQuery.js" />
+          <asp:ScriptReference Assembly="Telerik.Web.UI" Name="Telerik.Web.UI.Common.jQueryInclude.js" />
+        </Scripts>
+      </telerik:RadScriptManager>
+      
+      <script type="text/javascript">
+          //Put your JavaScript code here.
+      </script>
+      
+      <telerik:RadAjaxManager ID="RadAjaxManager1" runat="server">
+      </telerik:RadAjaxManager>
+      $end$
+        ]]></Code>
+  </Snippet>
+</CodeSnippet>

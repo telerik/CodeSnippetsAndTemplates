@@ -1,0 +1,60 @@
+<CodeSnippets
+    xmlns="http://schemas.microsoft.com/VisualStudio/2005/CodeSnippet">
+  <CodeSnippet Format="1.0.0">
+    <Header>
+      <Title>Employees Table</Title>
+      <Shortcut>needsource</Shortcut>
+      <Description>VB - Code snippet for dummy data source (DataTable)</Description>
+      <Author>Progress</Author>
+      <SnippetTypes>
+        <SnippetType>Expansion</SnippetType>
+        <SnippetType>SurroundsWith</SnippetType>
+      </SnippetTypes>
+    </Header>
+    <Snippet>
+      <Code Language="VB">
+        <![CDATA[
+          Private Function EmployeesTable() As DataTable
+              Dim dt As New DataTable()
+
+              dt.Columns.Add(New DataColumn("EmployeeID", Type.GetType("System.Int32")))
+              dt.Columns.Add(New DataColumn("BirthDate", Type.GetType("System.DateTime")))
+              dt.Columns.Add(New DataColumn("LastName", Type.GetType("System.String")))
+              dt.Columns.Add(New DataColumn("FirstName", Type.GetType("System.String")))
+              dt.Columns.Add(New DataColumn("Title", Type.GetType("System.String")))
+              dt.Columns.Add(New DataColumn("ReportsTo", Type.GetType("System.Int32")))
+
+              Dim PrimaryKeyColumns As DataColumn() = New DataColumn(0) {}
+              PrimaryKeyColumns(0) = dt.Columns("OrderID")
+              dt.PrimaryKey = PrimaryKeyColumns
+
+              For i As Integer = 0 To 70 - 1
+                  Dim index As Integer = i + 1
+                  Dim row As DataRow = dt.NewRow()
+
+                  row("EmployeeID") = index
+                  row("BirthDate") = DateTime.Now
+                  row("LastName") = "Last Name " & index
+                  row("FirstName") = "First Name " & index
+                  row("Title") = "Title " & index
+                  row("ReportsTo") = index
+
+                  dt.Rows.Add(row)
+              Next
+
+              Return dt
+          End Function
+                
+                ]]>
+      </Code>
+      <Imports>
+        <Import>
+          <Namespace>System.Data</Namespace>
+        </Import>
+        <Import>
+          <Namespace>Telerik.Web.UI</Namespace>
+        </Import>
+      </Imports>
+    </Snippet>
+  </CodeSnippet>
+</CodeSnippets>

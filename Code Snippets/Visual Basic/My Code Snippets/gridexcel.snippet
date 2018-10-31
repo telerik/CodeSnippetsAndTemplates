@@ -1,0 +1,72 @@
+<CodeSnippets
+    xmlns="http://schemas.microsoft.com/VisualStudio/2005/CodeSnippet">
+  <CodeSnippet Format="1.0.0">
+    <Header>
+      <Title>RadGrid Excel-Like Filtering</Title>
+      <Shortcut>gridexcel</Shortcut>
+      <Description>VB - Code snippets for RadGrid events and datasources needed for Excel-Like filtering</Description>
+      <Author>Progress</Author>
+      <SnippetTypes>
+        <SnippetType>Expansion</SnippetType>
+        <SnippetType>SurroundsWith</SnippetType>
+      </SnippetTypes>
+    </Header>
+    <Snippet>
+      <Code Language="VB">
+        <![CDATA[
+          Protected Sub RadGrid1_NeedDataSource(sender As Object, e As GridNeedDataSourceEventArgs)
+            RadGrid1.DataSource = OrdersTable()
+          End Sub
+          
+          Protected Sub RadGrid1_FilterCheckListItemsRequested(sender As Object, e As GridFilterCheckListItemsRequestedEventArgs)
+            Dim DataField As String = TryCast(e.Column, IGridDataColumn).GetActiveDataField()
+
+            e.ListBox.DataSource = OrdersTable().DefaultView.ToTable(True, DataField)
+            e.ListBox.DataKeyField = DataField
+            e.ListBox.DataTextField = DataField
+            e.ListBox.DataValueField = DataField
+            e.ListBox.DataBind()
+          End Sub
+
+          Private Function OrdersTable() As DataTable
+            Dim dt As New DataTable()
+
+            dt.Columns.Add(New DataColumn("OrderID", Type.GetType("System.Int32")))
+            dt.Columns.Add(New DataColumn("OrderDate", Type.GetType("System.DateTime")))
+            dt.Columns.Add(New DataColumn("Freight", Type.GetType("System.Decimal")))
+            dt.Columns.Add(New DataColumn("ShipName", Type.GetType("System.String")))
+            dt.Columns.Add(New DataColumn("ShipCountry", Type.GetType("System.String")))
+
+            Dim PrimaryKeyColumns As DataColumn() = New DataColumn(0) {}
+            PrimaryKeyColumns(0) = dt.Columns("OrderID")
+            dt.PrimaryKey = PrimaryKeyColumns
+
+            For i As Integer = 0 To 70 - 1
+            Dim index As Integer = i + 1
+            Dim row As DataRow = dt.NewRow()
+
+            row("OrderID") = index
+            row("OrderDate") = New DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day, 0, 0, 0).AddHours(index)
+            row("Freight") = index * 0.1 + index * 0.01
+            row("ShipName") = "Name " & index
+            row("ShipCountry") = "Country " & index
+
+            dt.Rows.Add(row)
+            Next
+
+            Return dt
+          End Function
+                
+                ]]>
+      </Code>
+      <Imports>
+        <Import>
+          <Namespace>System.Data</Namespace>
+        </Import>
+        <Import>
+          <Namespace>Telerik.Web.UI</Namespace>
+        </Import>
+      </Imports>
+    </Snippet>
+  </CodeSnippet>
+</CodeSnippets>
