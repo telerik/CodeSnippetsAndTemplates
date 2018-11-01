@@ -16,7 +16,7 @@
         <![CDATA[ 
   protected void RadGrid1_NeedDataSource(object sender, Telerik.Web.UI.GridNeedDataSourceEventArgs e)
     {
-        RadGrid1.DataSource = OrdersTable();
+        RadGrid1.DataSource = OrdersTable();$end$
     }
 
     private DataTable OrdersTable()
@@ -64,10 +64,13 @@
       </Code>
       <Imports>
         <Import>
-          <Namespace>System.Data</Namespace>
+          <Namespace>System</Namespace>
         </Import>
-        <Import>
-          <Namespace>Telerik.Web.UI</Namespace>
+		<Import>
+			<Namespace>System.Data</Namespace>
+        </Import>
+		<Import>
+			<Namespace>Telerik.Web.UI</Namespace>
         </Import>
       </Imports>
     </Snippet>

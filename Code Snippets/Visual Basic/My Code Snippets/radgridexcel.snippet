@@ -15,7 +15,7 @@
       <Code Language="VB">
         <![CDATA[
           Protected Sub RadGrid1_NeedDataSource(sender As Object, e As GridNeedDataSourceEventArgs)
-            RadGrid1.DataSource = OrdersTable()
+            RadGrid1.DataSource = OrdersTable()$end$
           End Sub
           
           Protected Sub RadGrid1_FilterCheckListItemsRequested(sender As Object, e As GridFilterCheckListItemsRequestedEventArgs)
@@ -63,8 +63,8 @@
         <Import>
           <Namespace>System.Data</Namespace>
         </Import>
-        <Import>
-          <Namespace>Telerik.Web.UI</Namespace>
+		<Import>
+		  <Namespace>Telerik.Web.UI</Namespace>
         </Import>
       </Imports>
     </Snippet>

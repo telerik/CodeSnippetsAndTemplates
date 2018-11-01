@@ -1,6 +1,6 @@
 ﻿<CodeSnippet Format="1.1.0" xmlns="http://schemas.microsoft.com/VisualStudio/2005/CodeSnippet">
   <Header>
-    <Title>Excel-Like Filtering</Title>
+    <Title>RadGrid with Excel-Like Filtering</Title>
     <Author>Progress</Author>
     <Shortcut>radgridexcel</Shortcut>
     <Description>Markup snippet for a RadGrid with Excel-like filtering</Description>
@@ -17,7 +17,7 @@
             EnableHeaderContextMenu="true"
             EnableHeaderContextFilterMenu="true"
             OnFilterCheckListItemsRequested="RadGrid1_FilterCheckListItemsRequested"
-            OnNeedDataSource="RadGrid1_NeedDataSource">
+            OnNeedDataSource="RadGrid1_NeedDataSource" $end$>
             <MasterTableView AutoGenerateColumns="False" DataKeyNames="OrderID">
                 <Columns>
                     <telerik:GridBoundColumn DataField="OrderID" DataType="System.Int32" FilterCheckListEnableLoadOnDemand="true"
