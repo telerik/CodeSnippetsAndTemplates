@@ -11,8 +11,8 @@
   <Snippet>
     <Code Language="HTML">
       <![CDATA[
-        <telerik:RadGrid ID="RadGrid1" runat="server" AllowPaging="True" Width="800px">
-            <MasterTableView AutoGenerateColumns="False" DataKeyNames="OrderID" $end$>
+        <telerik:RadGrid ID="RadGrid1" runat="server" AllowPaging="True" Width="800px" OnNeedDataSource="RadGrid1_NeedDataSource" $end$>
+            <MasterTableView AutoGenerateColumns="False" DataKeyNames="OrderID">
                 <Columns>
                     <telerik:GridBoundColumn DataField="OrderID" DataType="System.Int32"
                         FilterControlAltText="Filter OrderID column" HeaderText="OrderID"
