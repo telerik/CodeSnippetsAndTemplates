@@ -37,13 +37,12 @@
     protected void RadGrid1_InsertCommand(object sender, GridCommandEventArgs e)
     {
         GridEditableItem editedItem = e.Item as GridEditableItem;
-        //DataTable ordersTable = Northwind.Orders;
 
         DataRow newRow = SessionDataSource.NewRow();
 
         //As this example demonstrates only in-memory editing, a new primary key value should be generated
         //This should not be applied when updating directly the database
-        DataRow[] allValues = SessionDataSource.Select("OrderID = MAX(OrderID)", "OrderID", DataViewRowState.CurrentRows);
+        DataRow[] allValues = SessionDataSource.Select("OrderID = MAX(OrderID)");
 
         if (allValues.Length > 0)
         {
@@ -68,8 +67,9 @@
         }
         catch (Exception ex)
         {
-            Label1.Text = "Unable to insert into Orders. Reason: " + ex.Message;
+            Label1.Text += string.Format("<br />Unable to insert into Orders. Reason: {0}", ex.Message);
             e.Canceled = true;
+            return;
         }
 
         SessionDataSource.Rows.Add(newRow);
@@ -89,8 +89,8 @@
         GridEditableItem editedItem = e.Item as GridEditableItem;
 
         //Locate the changed row in the DataSource
-        DataRow[] changedRows = SessionDataSource.Select("OrderID = " +
-                  editedItem.OwnerTableView.DataKeyValues[editedItem.ItemIndex]["OrderID"].ToString());
+        DataRow[] changedRows = SessionDataSource.Select(string.Format("OrderID = {0}", editedItem.GetDataKeyValue("OrderID")));
+
         if (changedRows.Length != 1)
         {
             this.Label1.Text += "Unable to locate the Order for updating.";
@@ -112,21 +112,21 @@
         catch (Exception ex)
         {
             changedRows[0].CancelEdit();
-            Label1.Text += "Unable to update Orders. Reason: " + ex.Message;
-
+            Label1.Text += string.Format("Unable to update Orders. Reason: {0}", ex.Message);
             e.Canceled = true;
+            return;
         }
     }
 
     // DELETE
     protected void RadGrid1_DeleteCommand(object sender, GridCommandEventArgs e)
     {
-        string ID = e.Item.OwnerTableView.DataKeyValues[e.Item.ItemIndex]["OrderID"].ToString();
+        GridDataItem dataItem = e.Item as GridDataItem;
+        string ID = dataItem.GetDataKeyValue("OrderID").ToString();
 
         if (SessionDataSource.Rows.Find(ID) != null)
         {
             SessionDataSource.Rows.Find(ID).Delete();
-            SessionDataSource.AcceptChanges();
         }
     }
     #endregion
@@ -162,7 +162,6 @@
         return dt;
     }
     #endregion
-
 ]]>
       </Code>
       <Imports>

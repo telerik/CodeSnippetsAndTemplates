@@ -14,17 +14,14 @@
     <Snippet>
       <Code Language="VB">
         <![CDATA[
-          $end$
-          
+$end$  
 #Region "Properties for CRUD Operations"
     Public ReadOnly Property SessionDataSource() As DataTable
         Get
             Dim sessionKey As String = "SessionDataSource"
-
             If Session(sessionKey) Is Nothing Or Not IsPostBack Then
                 Session(sessionKey) = OrdersTable()
             End If
-
             Return DirectCast(Session(sessionKey), DataTable)
         End Get
     End Property
@@ -35,10 +32,11 @@
     Protected Sub RadGrid1_InsertCommand(sender As Object, e As GridCommandEventArgs)
         Dim editedItem As GridEditableItem = CType(e.Item, GridEditableItem)
 
-        Dim newRow As DataRow = SessionDataSource.NewRow
         'As this example demonstrates only in-memory editing, a new primary key value should be generated
         'This should not be applied when updating directly the database
-        Dim allValues() As DataRow = SessionDataSource.Select("OrderID = MAX(OrderID)", "OrderID", DataViewRowState.CurrentRows)
+        Dim allValues() As DataRow = SessionDataSource.Select("OrderID = MAX(OrderID)")
+
+        Dim newRow As DataRow = SessionDataSource.NewRow
 
         If (allValues.Length > 0) Then
             newRow("OrderID") = Integer.Parse(allValues(0)("OrderID").ToString()) + 1
@@ -57,25 +55,31 @@
         Catch ex As Exception
             Label1.Text &= String.Format("<br />Unable to insert into Orders. Reason: {0}", ex.Message)
             e.Canceled = True
+            Return
         End Try
         SessionDataSource.Rows.Add(newRow)
         'Code for updating the database ca go here...
+
         Label1.Text &= String.Format("<br />Order {0} inserted", newRow("OrderID"))
     End Sub
+
     'READ (data binding)
     Protected Sub RadGrid1_NeedDataSource(sender As Object, e As GridNeedDataSourceEventArgs)
         RadGrid1.DataSource = SessionDataSource
     End Sub
+
     'UPDATE
     Protected Sub RadGrid1_UpdateCommand(sender As Object, e As GridCommandEventArgs)
         Dim editedItem As GridEditableItem = TryCast(e.Item, GridEditableItem)
         'Locate the changed row in the DataSource
-        Dim changedRows As DataRow() = SessionDataSource.Select("OrderID = " + editedItem.OwnerTableView.DataKeyValues(editedItem.ItemIndex)("OrderID").ToString())
+        Dim changedRows As DataRow() = SessionDataSource.Select(String.Format("OrderID = {0}", editedItem.GetDataKeyValue("OrderID")))
+
         If changedRows.Length <> 1 Then
-            Me.Label1.Text &= "Unable to locate the Order for updating."
+            Me.Label1.Text &= "<br />Unable to locate the Order for updating."
             e.Canceled = True
             Return
         End If
+
         'Update new values
         Dim newValues As New Hashtable()
         e.Item.OwnerTableView.ExtractValuesFromItem(newValues, editedItem)
@@ -87,17 +91,19 @@
             changedRows(0).EndEdit()
         Catch ex As Exception
             changedRows(0).CancelEdit()
-            Label1.Text &= "Unable to update Orders. Reason: " + ex.Message
+            Label1.Text &= String.Format("<br />Unable to update Orders. Reason: {0}", ex.Message)
             e.Canceled = True
+            Return
         End Try
     End Sub
+
     'DELETE
     Protected Sub RadGrid1_DeleteCommand(sender As Object, e As GridCommandEventArgs)
-        Dim ID As String = e.Item.OwnerTableView.DataKeyValues(e.Item.ItemIndex)("OrderID").ToString()
+        Dim dataItem = TryCast(e.Item, GridDataItem)
+        Dim ID As String = dataItem.GetDataKeyValue("OrderID").ToString()
 
         If Not (SessionDataSource.Rows.Find(ID) Is Nothing) Then
             SessionDataSource.Rows.Find(ID).Delete()
-            SessionDataSource.AcceptChanges()
         End If
     End Sub
 #End Region
@@ -128,11 +134,9 @@
 
             dt.Rows.Add(row)
         Next
-
         Return dt
     End Function
 #End Region
-                
                 ]]>
       </Code>
       <Imports>
