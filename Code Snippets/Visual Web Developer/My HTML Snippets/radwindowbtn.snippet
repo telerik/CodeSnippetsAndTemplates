@@ -1,0 +1,23 @@
+<CodeSnippet Format="1.1.0" xmlns="http://schemas.microsoft.com/VisualStudio/2005/CodeSnippet">
+  <Header>
+    <Title>radwindowbtn</Title>
+    <Author>Peter Milchev</Author>
+    <Shortcut>radwindowbtn</Shortcut>
+    <Description>Markup snippet for a RadWindow control with show window button</Description>
+    <SnippetTypes>
+      <SnippetType>Expansion</SnippetType>
+    </SnippetTypes>
+  </Header>
+  <Snippet>
+    <Code Language="html"><![CDATA[<telerik:RadWindow runat="server" ID="RadWindow1" Width="1000" Height="1000" VisibleOnPageLoad="true"
+    NavigateUrl="Default2.aspx">
+</telerik:RadWindow>
+<telerik:RadButton runat="server" OnClientClicked="OnClientClicked" ID="RadButton1" Text="Show Window" AutoPostBack="false" />
+<script>
+    function OnClientClicked(sender, args) {
+        var wnd = $find("<%= RadWindow1.ClientID %>");
+        wnd.show();
+    }
+</script>$end$]]></Code>
+  </Snippet>
+</CodeSnippet>
