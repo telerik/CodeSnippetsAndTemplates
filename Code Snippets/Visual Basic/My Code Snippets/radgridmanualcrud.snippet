@@ -1,0 +1,158 @@
+<CodeSnippets
+    xmlns="http://schemas.microsoft.com/VisualStudio/2005/CodeSnippet">
+  <CodeSnippet Format="1.0.0">
+    <Header>
+      <Title>RadGrid Manual CRUD</Title>
+      <Shortcut>radgridmanualcrud</Shortcut>
+      <Description>Visual Basic code snippets for RadGrid Manual CRUD operations using Advanced DataBinding with NeedDataSource</Description>
+      <Author>Progress</Author>
+      <SnippetTypes>
+        <SnippetType>Expansion</SnippetType>
+        <SnippetType>SurroundsWith</SnippetType>
+      </SnippetTypes>
+    </Header>
+    <Snippet>
+      <Code Language="VB">
+        <![CDATA[
+$end$  
+#Region "Properties for CRUD Operations"
+    Public ReadOnly Property SessionDataSource() As DataTable
+        Get
+            Dim sessionKey As String = "SessionDataSource"
+            If Session(sessionKey) Is Nothing Or Not IsPostBack Then
+                Session(sessionKey) = OrdersTable()
+            End If
+            Return DirectCast(Session(sessionKey), DataTable)
+        End Get
+    End Property
+#End Region
+
+#Region "RadGrid Events for CRUD Operations"
+    'CREATE (Add New Record)
+    Protected Sub RadGrid1_InsertCommand(sender As Object, e As GridCommandEventArgs)
+        Dim editedItem As GridEditableItem = CType(e.Item, GridEditableItem)
+
+        'As this example demonstrates only in-memory editing, a new primary key value should be generated
+        'This should not be applied when updating directly the database
+        Dim allValues() As DataRow = SessionDataSource.Select("OrderID = MAX(OrderID)")
+
+        Dim newRow As DataRow = SessionDataSource.NewRow
+
+        If (allValues.Length > 0) Then
+            newRow("OrderID") = Integer.Parse(allValues(0)("OrderID").ToString()) + 1
+        Else
+            newRow("OrderID") = 1
+            'the table is empty;
+        End If
+        'Set new values
+        Dim newValues As Hashtable = New Hashtable
+        'The GridTableView will fill the values from all editable columns in the hash
+        e.Item.OwnerTableView.ExtractValuesFromItem(newValues, editedItem)
+        Try
+            For Each entry As DictionaryEntry In newValues
+                newRow(CType(entry.Key, String)) = entry.Value
+            Next
+        Catch ex As Exception
+            Label1.Text &= String.Format("<br />Unable to insert into Orders. Reason: {0}", ex.Message)
+            e.Canceled = True
+            Return
+        End Try
+        SessionDataSource.Rows.Add(newRow)
+        'Code for updating the database ca go here...
+
+        Label1.Text &= String.Format("<br />Order {0} inserted", newRow("OrderID"))
+    End Sub
+
+    'READ (data binding)
+    Protected Sub RadGrid1_NeedDataSource(sender As Object, e As GridNeedDataSourceEventArgs)
+        RadGrid1.DataSource = SessionDataSource
+    End Sub
+
+    'UPDATE
+    Protected Sub RadGrid1_UpdateCommand(sender As Object, e As GridCommandEventArgs)
+        Dim editedItem As GridEditableItem = TryCast(e.Item, GridEditableItem)
+        'Locate the changed row in the DataSource
+        Dim changedRows As DataRow() = SessionDataSource.Select(String.Format("OrderID = {0}", editedItem.GetDataKeyValue("OrderID")))
+
+        If changedRows.Length <> 1 Then
+            Me.Label1.Text &= "<br />Unable to locate the Order for updating."
+            e.Canceled = True
+            Return
+        End If
+
+        'Update new values
+        Dim newValues As New Hashtable()
+        e.Item.OwnerTableView.ExtractValuesFromItem(newValues, editedItem)
+        changedRows(0).BeginEdit()
+        Try
+            For Each entry As DictionaryEntry In newValues
+                changedRows(0)(DirectCast(entry.Key, String)) = entry.Value
+            Next
+            changedRows(0).EndEdit()
+        Catch ex As Exception
+            changedRows(0).CancelEdit()
+            Label1.Text &= String.Format("<br />Unable to update Orders. Reason: {0}", ex.Message)
+            e.Canceled = True
+            Return
+        End Try
+    End Sub
+
+    'DELETE
+    Protected Sub RadGrid1_DeleteCommand(sender As Object, e As GridCommandEventArgs)
+        Dim dataItem = TryCast(e.Item, GridDataItem)
+        Dim ID As String = dataItem.GetDataKeyValue("OrderID").ToString()
+
+        If Not (SessionDataSource.Rows.Find(ID) Is Nothing) Then
+            SessionDataSource.Rows.Find(ID).Delete()
+        End If
+    End Sub
+#End Region
+
+#Region "DataSource"
+    Private Function OrdersTable() As DataTable
+        Dim dt As New DataTable()
+
+        dt.Columns.Add(New DataColumn("OrderID", Type.GetType("System.Int32")))
+        dt.Columns.Add(New DataColumn("OrderDate", Type.GetType("System.DateTime")))
+        dt.Columns.Add(New DataColumn("Freight", Type.GetType("System.Decimal")))
+        dt.Columns.Add(New DataColumn("ShipName", Type.GetType("System.String")))
+        dt.Columns.Add(New DataColumn("ShipCountry", Type.GetType("System.String")))
+
+        Dim PrimaryKeyColumns As DataColumn() = New DataColumn(0) {}
+        PrimaryKeyColumns(0) = dt.Columns("OrderID")
+        dt.PrimaryKey = PrimaryKeyColumns
+
+        For i As Integer = 0 To 70 - 1
+            Dim index As Integer = i + 1
+            Dim row As DataRow = dt.NewRow()
+
+            row("OrderID") = index
+            row("OrderDate") = New DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day, 0, 0, 0).AddHours(index)
+            row("Freight") = index * 0.1 + index * 0.01
+            row("ShipName") = "Name " & index
+            row("ShipCountry") = "Country " & index
+
+            dt.Rows.Add(row)
+        Next
+        Return dt
+    End Function
+#End Region
+                ]]>
+      </Code>
+      <Imports>
+        <Import>
+          <Namespace>System</Namespace>
+        </Import>
+        <Import>
+          <Namespace>System.Collections</Namespace>
+        </Import>
+        <Import>
+          <Namespace>System.Data</Namespace>
+        </Import>
+        <Import>
+          <Namespace>Telerik.Web.UI</Namespace>
+        </Import>
+      </Imports>
+    </Snippet>
+  </CodeSnippet>
+</CodeSnippets>

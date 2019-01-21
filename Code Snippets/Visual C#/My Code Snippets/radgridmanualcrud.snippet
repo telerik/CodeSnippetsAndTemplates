@@ -1,0 +1,183 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<CodeSnippets  xmlns="http://schemas.microsoft.com/VisualStudio/2005/CodeSnippet">
+  <CodeSnippet Format="1.0.0">
+    <Header>
+      <Title>RadGrid Manual CRUD</Title>
+      <Shortcut>radgridmanualcrud</Shortcut>
+      <Description>CSharp code snippets for RadGrid Manual CRUD operations using Advanced DataBinding with NeedDataSource</Description>
+      <Author>Progress</Author>
+      <SnippetTypes>
+        <SnippetType>Expansion</SnippetType>
+        <SnippetType>SurroundsWith</SnippetType>
+      </SnippetTypes>
+    </Header>
+    <Snippet>
+      <Code Language="csharp">
+<![CDATA[ 
+    $end$
+    #region Properties for CRUD Operations
+    public DataTable SessionDataSource
+    {
+        get
+        {
+            string sessionKey = "SessionDataSource";
+
+            if (Session[sessionKey] == null || !IsPostBack)
+            {
+                Session[sessionKey] = OrdersTable();
+            }
+            return (DataTable)Session[sessionKey];
+        }
+    }
+    #endregion
+
+    #region RadGrid Events for CRUD Operations
+
+    // CREATE (Add New Record)
+    protected void RadGrid1_InsertCommand(object sender, GridCommandEventArgs e)
+    {
+        GridEditableItem editedItem = e.Item as GridEditableItem;
+
+        DataRow newRow = SessionDataSource.NewRow();
+
+        //As this example demonstrates only in-memory editing, a new primary key value should be generated
+        //This should not be applied when updating directly the database
+        DataRow[] allValues = SessionDataSource.Select("OrderID = MAX(OrderID)");
+
+        if (allValues.Length > 0)
+        {
+            newRow["OrderID"] = int.Parse(allValues[0]["OrderID"].ToString()) + 1;
+        }
+        else
+        {
+            newRow["OrderID"] = 1; //the table is empty;
+        }
+
+        //Set new values
+        Hashtable newValues = new Hashtable();
+        //The GridTableView will fill the values from all editable columns in the hash
+        e.Item.OwnerTableView.ExtractValuesFromItem(newValues, editedItem);
+
+        try
+        {
+            foreach (DictionaryEntry entry in newValues)
+            {
+                newRow[(string)entry.Key] = entry.Value;
+            }
+        }
+        catch (Exception ex)
+        {
+            Label1.Text += string.Format("<br />Unable to insert into Orders. Reason: {0}", ex.Message);
+            e.Canceled = true;
+            return;
+        }
+
+        SessionDataSource.Rows.Add(newRow);
+        //Code for updating the database ca go here...
+        Label1.Text += string.Format("<br />Order {0} inserted", newRow["OrderID"]);
+    }
+
+    // READ (data binding)
+    protected void RadGrid1_NeedDataSource(object sender, GridNeedDataSourceEventArgs e)
+    {
+        RadGrid1.DataSource = SessionDataSource;
+    }
+
+    // UPDATE
+    protected void RadGrid1_UpdateCommand(object sender, GridCommandEventArgs e)
+    {
+        GridEditableItem editedItem = e.Item as GridEditableItem;
+
+        //Locate the changed row in the DataSource
+        DataRow[] changedRows = SessionDataSource.Select(string.Format("OrderID = {0}", editedItem.GetDataKeyValue("OrderID")));
+
+        if (changedRows.Length != 1)
+        {
+            this.Label1.Text += "Unable to locate the Order for updating.";
+            e.Canceled = true;
+            return;
+        }
+        //Update new values
+        Hashtable newValues = new Hashtable();
+        e.Item.OwnerTableView.ExtractValuesFromItem(newValues, editedItem);
+        changedRows[0].BeginEdit();
+        try
+        {
+            foreach (DictionaryEntry entry in newValues)
+            {
+                changedRows[0][(string)entry.Key] = entry.Value;
+            }
+            changedRows[0].EndEdit();
+        }
+        catch (Exception ex)
+        {
+            changedRows[0].CancelEdit();
+            Label1.Text += string.Format("Unable to update Orders. Reason: {0}", ex.Message);
+            e.Canceled = true;
+            return;
+        }
+    }
+
+    // DELETE
+    protected void RadGrid1_DeleteCommand(object sender, GridCommandEventArgs e)
+    {
+        GridDataItem dataItem = e.Item as GridDataItem;
+        string ID = dataItem.GetDataKeyValue("OrderID").ToString();
+
+        if (SessionDataSource.Rows.Find(ID) != null)
+        {
+            SessionDataSource.Rows.Find(ID).Delete();
+        }
+    }
+    #endregion
+
+    #region DataSource
+    private DataTable OrdersTable()
+    {
+        DataTable dt = new DataTable();
+
+        dt.Columns.Add(new DataColumn("OrderID", typeof(int)));
+        dt.Columns.Add(new DataColumn("OrderDate", typeof(DateTime)));
+        dt.Columns.Add(new DataColumn("Freight", typeof(decimal)));
+        dt.Columns.Add(new DataColumn("ShipName", typeof(string)));
+        dt.Columns.Add(new DataColumn("ShipCountry", typeof(string)));
+
+        dt.PrimaryKey = new DataColumn[] { dt.Columns["OrderID"] };
+
+        for (int i = 0; i < 70; i++)
+        {
+            int index = i + 1;
+
+            DataRow row = dt.NewRow();
+
+            row["OrderID"] = index;
+            row["OrderDate"] = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day, 0, 0, 0).AddHours(index);
+            row["Freight"] = index * 0.1 + index * 0.01;
+            row["ShipName"] = "Name " + index;
+            row["ShipCountry"] = "Country " + index;
+
+            dt.Rows.Add(row);
+        }
+
+        return dt;
+    }
+    #endregion
+]]>
+      </Code>
+      <Imports>
+        <Import>
+          <Namespace>System</Namespace>
+        </Import>
+        <Import>
+          <Namespace>System.Collections</Namespace>
+        </Import>
+        <Import>
+          <Namespace>System.Data</Namespace>
+        </Import>
+        <Import>
+          <Namespace>Telerik.Web.UI</Namespace>
+        </Import>
+      </Imports>
+    </Snippet>
+  </CodeSnippet>
+</CodeSnippets>

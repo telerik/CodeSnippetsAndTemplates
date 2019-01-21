@@ -1,0 +1,23 @@
+<CodeSnippet Format="1.1.0" xmlns="http://schemas.microsoft.com/VisualStudio/2005/CodeSnippet">
+  <Header>
+    <Title>radajaxmanager</Title>
+    <Author>Peter Milchev</Author>
+    <Shortcut>radajaxmanager</Shortcut>
+    <Description>Markup snippet for a RadAjaxManager control</Description>
+    <SnippetTypes>
+      <SnippetType>Expansion</SnippetType>
+    </SnippetTypes>
+  </Header>
+  <Snippet>
+    <Code Language="html"><![CDATA[
+<telerik:RadAjaxManager ID="RadAjaxManager1" runat="server">
+    <AjaxSettings>
+        <telerik:AjaxSetting AjaxControlID="RadGrid1">
+            <UpdatedControls>
+                <telerik:AjaxUpdatedControl ControlID="RadGrid1" />
+            </UpdatedControls>
+        </telerik:AjaxSetting>
+    </AjaxSettings>
+</telerik:RadAjaxManager>$end$]]></Code>
+  </Snippet>
+</CodeSnippet>

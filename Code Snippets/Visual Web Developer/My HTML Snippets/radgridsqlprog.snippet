@@ -1,0 +1,24 @@
+﻿<CodeSnippet Format="1.1.0" xmlns="http://schemas.microsoft.com/VisualStudio/2005/CodeSnippet">
+  <Header>
+    <Title>RadGrid created Programmatically with SqlDataSource</Title>
+    <Author>Progress</Author>
+    <Shortcut>radgridsqlprog</Shortcut>
+    <Description>Markup snippet for a RadGrid control created entirely in the code behind with declarative binding using DataSourceID</Description>
+    <SnippetTypes>
+      <SnippetType>Expansion</SnippetType>
+    </SnippetTypes>
+  </Header>
+  <Snippet>
+    <Code Language="HTML" Delimiter="^">
+      <![CDATA[
+<asp:PlaceHolder ID="PlaceHolder1" runat="server"></asp:PlaceHolder>
+
+<asp:SqlDataSource ID="SqlDataSource1" runat="server"
+    ConnectionString="<%$ ConnectionStrings:ConnectionString %>"
+    InsertCommand="INSERT INTO [Orders] ([OrderDate], [Freight], [ShipName], [ShipCountry]) VALUES (@OrderDate, @Freight, @ShipName, @ShipCountry)"
+    SelectCommand="SELECT [OrderID], [OrderDate], [Freight], [ShipName], [ShipCountry] FROM [Orders]"
+    UpdateCommand="UPDATE [Orders] SET [OrderDate] = @OrderDate, [Freight] = @Freight, [ShipName] = @ShipName, [ShipCountry] = @ShipCountry WHERE [OrderID] = @OrderID"
+    DeleteCommand="DELETE FROM [Orders] WHERE [OrderID] = @OrderID"></asp:SqlDataSource>^end^]]>
+    </Code>
+  </Snippet>
+</CodeSnippet>

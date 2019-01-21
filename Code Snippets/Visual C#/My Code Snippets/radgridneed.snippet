@@ -1,0 +1,66 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<CodeSnippets  xmlns="http://schemas.microsoft.com/VisualStudio/2005/CodeSnippet">
+  <CodeSnippet Format="1.0.0">
+    <Header>
+      <Title>RadGrid NeedDataSource</Title>
+      <Shortcut>radgridneed</Shortcut>
+      <Description>CSharp code snippets for RadGrid with Advanced DataBinding using NeedDataSource</Description>
+      <Author>Progress</Author>
+      <SnippetTypes>
+        <SnippetType>Expansion</SnippetType>
+        <SnippetType>SurroundsWith</SnippetType>
+      </SnippetTypes>
+    </Header>
+    <Snippet>
+      <Code Language="csharp">
+<![CDATA[ 
+    protected void RadGrid1_NeedDataSource(object sender, GridNeedDataSourceEventArgs e)
+    {
+        RadGrid1.DataSource = OrdersTable(); $end$
+    }
+
+    private DataTable OrdersTable()
+    {
+        DataTable dt = new DataTable();
+
+        dt.Columns.Add(new DataColumn("OrderID", typeof(int)));
+        dt.Columns.Add(new DataColumn("OrderDate", typeof(DateTime)));
+        dt.Columns.Add(new DataColumn("Freight", typeof(decimal)));
+        dt.Columns.Add(new DataColumn("ShipName", typeof(string)));
+        dt.Columns.Add(new DataColumn("ShipCountry", typeof(string)));
+
+        dt.PrimaryKey = new DataColumn[] { dt.Columns["OrderID"] };
+
+        for (int i = 0; i < 70; i++)
+        {
+            int index = i + 1;
+
+            DataRow row = dt.NewRow();
+
+            row["OrderID"] = index;
+            row["OrderDate"] = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day, 0, 0, 0).AddHours(index);
+            row["Freight"] = index * 0.1 + index * 0.01;
+            row["ShipName"] = "Name " + index;
+            row["ShipCountry"] = "Country " + index;
+
+            dt.Rows.Add(row);
+        }
+
+        return dt;
+    }
+]]>
+      </Code>
+      <Imports>
+        <Import>
+          <Namespace>System</Namespace>
+        </Import>
+        <Import>
+          <Namespace>System.Data</Namespace>
+        </Import>
+        <Import>
+          <Namespace>Telerik.Web.UI</Namespace>
+        </Import>
+      </Imports>
+    </Snippet>
+  </CodeSnippet>
+</CodeSnippets>
