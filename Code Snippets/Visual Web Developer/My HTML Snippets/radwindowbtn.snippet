@@ -16,7 +16,7 @@
 <telerik:RadButton runat="server" OnClientClicked="OnClientClicked" ID="RadButton1" Text="Show Window" AutoPostBack="false" />
 <script>
     function OnClientClicked(sender, args) {
-        var wnd = $find("<%= RadWindow1.ClientID %>");
+        var wnd = $$find("<%= RadWindow1.ClientID %>");
         wnd.show();
     }
 </script>$end$]]></Code>

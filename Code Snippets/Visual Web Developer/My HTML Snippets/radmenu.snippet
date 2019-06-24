@@ -1,0 +1,42 @@
+<CodeSnippet Format="1.1.0" xmlns="http://schemas.microsoft.com/VisualStudio/2005/CodeSnippet">
+  <Header>
+    <Title>radmenu</Title>
+    <Author>Peter Milchev</Author>
+    <Shortcut>radmenu</Shortcut>
+    <Description>Markup snippet for a RadMenu control</Description>
+    <SnippetTypes>
+      <SnippetType>Expansion</SnippetType>
+    </SnippetTypes>
+  </Header>
+  <Snippet>
+    <Code Language="html"><![CDATA[<telerik:RadMenu runat="server" ID="RadMenu1" RenderMode="Lightweight">
+    <Items>
+        <telerik:RadMenuItem Text="Root 1"></telerik:RadMenuItem>
+        <telerik:RadMenuItem Text="Root 2">
+            <Items>
+                <telerik:RadMenuItem Text="Child 2.1"></telerik:RadMenuItem>
+                <telerik:RadMenuItem Text="Child 2.2">
+                    <Items>
+                        <telerik:RadMenuItem Text="Grand Child 2.2.1"></telerik:RadMenuItem>
+                        <telerik:RadMenuItem Text="Grand Child 2.2.2"></telerik:RadMenuItem>
+                        <telerik:RadMenuItem Text="Grand Child 2.2.3"></telerik:RadMenuItem>
+                        <telerik:RadMenuItem Text="Grand Child 2.2.4"></telerik:RadMenuItem>
+                    </Items>
+                </telerik:RadMenuItem>
+                <telerik:RadMenuItem Text="Child 2.3"></telerik:RadMenuItem>
+                <telerik:RadMenuItem Text="Child 2.4"></telerik:RadMenuItem>
+            </Items>
+        </telerik:RadMenuItem>
+        <telerik:RadMenuItem Text="Root 3"></telerik:RadMenuItem>
+        <telerik:RadMenuItem Text="Root 4">
+            <Items>
+                <telerik:RadMenuItem Text="Child 4.1"></telerik:RadMenuItem>
+                <telerik:RadMenuItem Text="Child 4.2"></telerik:RadMenuItem>
+                <telerik:RadMenuItem Text="Child 4.3"></telerik:RadMenuItem>
+                <telerik:RadMenuItem Text="Child 4.4"></telerik:RadMenuItem>
+            </Items>
+        </telerik:RadMenuItem>
+    </Items>
+</telerik:RadMenu>$end$]]></Code>
+  </Snippet>
+</CodeSnippet>
