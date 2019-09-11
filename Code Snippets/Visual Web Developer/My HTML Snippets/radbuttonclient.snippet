@@ -1,7 +1,7 @@
 <CodeSnippet Format="1.1.0" xmlns="http://schemas.microsoft.com/VisualStudio/2005/CodeSnippet">
   <Header>
-    <Title>radbutton</Title>
-    <Author>Telerik AD</Author>
+    <Title>radbuttonclient</Title>
+    <Author>Peter Milchev</Author>
     <Shortcut>radbuttonclient</Shortcut>
     <Description>Markup snippet for a RadButton control with client-side click event</Description>
     <SnippetTypes>
@@ -9,7 +9,7 @@
     </SnippetTypes>
   </Header>
   <Snippet>
-    <Code Language="html"><![CDATA[<telerik:RadButton runat="server" ID="RadButton1" Text="Postback" AutoPostBack="false" OnClientClicked="OnClientClicked" />
+    <Code Language="html"><![CDATA[<telerik:RadButton runat="server" ID="RadButton1" Text="Call JavaScript function" AutoPostBack="false" OnClientClicked="OnClientClicked" />
 <script>
     function OnClientClicked(sender, args) {
 $end$
