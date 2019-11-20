@@ -16,7 +16,7 @@
 <![CDATA[ 
     protected void RadGrid1_NeedDataSource(object sender, GridNeedDataSourceEventArgs e)
     {
-        RadGrid1.DataSource = OrdersTable(); $end$
+        (sender as RadGrid).DataSource = OrdersTable(); $end$
     }
 
     private DataTable OrdersTable()
