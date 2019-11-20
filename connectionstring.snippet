@@ -1,0 +1,21 @@
+﻿<CodeSnippet Format="1.1.0" xmlns="http://schemas.microsoft.com/VisualStudio/2005/CodeSnippet">
+  <Header>
+    <Title>Connection string for Visual Studio LocalDB</Title>
+    <Author>Peter Milchev</Author>
+    <Shortcut>constr</Shortcut>
+    <AlternativeShortcuts>
+    </AlternativeShortcuts>
+    <Description>Connection string for Visual Studio LocalDB</Description>
+    <SnippetTypes>
+      <SnippetType>Expansion</SnippetType>
+    </SnippetTypes>
+  </Header>
+  <Snippet>
+    <Code Language="html"><![CDATA[
+  <connectionStrings>
+    <add name="NorthwindConnectionString" connectionString="Data Source=(LocalDB)\MSSQLLocalDB;AttachDbFilename=|DataDirectory|Northwind.mdf;Integrated Security=True" providerName="System.Data.SqlClient"/>
+   </connectionStrings>
+$end$
+        ]]></Code>
+  </Snippet>
+</CodeSnippet>
