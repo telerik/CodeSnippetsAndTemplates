@@ -80,7 +80,7 @@
     // READ (data binding)
     protected void RadGrid1_NeedDataSource(object sender, GridNeedDataSourceEventArgs e)
     {
-        RadGrid1.DataSource = SessionDataSource;
+        (sender as RadGrid).DataSource = SessionDataSource;
     }
 
     // UPDATE
