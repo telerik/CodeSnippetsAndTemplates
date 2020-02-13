@@ -1,0 +1,23 @@
+<CodeSnippet Format="1.1.0" xmlns="http://schemas.microsoft.com/VisualStudio/2005/CodeSnippet">
+  <Header>
+    <Title>radcomboboxsql</Title>
+    <Author>Peter Milchev</Author>
+    <Shortcut>radcomboboxsql</Shortcut>
+    <Description>Markup snippet for a RadComboBox control bound to an SqlDataSource</Description>
+    <SnippetTypes>
+      <SnippetType>Expansion</SnippetType>
+    </SnippetTypes>
+  </Header>
+  <Snippet>
+    <Code Language="html"><![CDATA[
+<telerik:RadComboBox ID="RadComboBox1" runat="server"
+    DataSourceID="SqlDataSource1"
+    DataTextField="ShipCountry"
+    DataValueField="OrderID" RenderMode="Lightweight">
+</telerik:RadComboBox>
+<asp:SqlDataSource ID="SqlDataSource1" runat="server"
+    ConnectionString="<%$$ ConnectionStrings:NorthwindConnectionString %>"
+    SelectCommand="SELECT top 10 [OrderID], [OrderDate], [Freight], [ShipName], [ShipCountry] FROM [Orders]">
+</asp:SqlDataSource>$end$]]></Code>
+  </Snippet>
+</CodeSnippet>
