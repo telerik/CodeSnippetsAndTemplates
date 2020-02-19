@@ -1,0 +1,29 @@
+<CodeSnippet Format="1.1.0" xmlns="http://schemas.microsoft.com/VisualStudio/2005/CodeSnippet">
+  <Header>
+    <Title>Telerik Connection Strings</Title>
+    <Author>Attila Antal</Author>
+    <Shortcut>telerikconnectionstrings</Shortcut>
+    <AlternativeShortcuts>
+      <Shortcut Value="telerikconnectionstrings">radconstr</Shortcut>
+    </AlternativeShortcuts>
+    <Description>Snippets for Telerik.mdf and Northwind.mdf database files</Description>
+    <SnippetTypes>
+      <SnippetType>Expansion</SnippetType>
+    </SnippetTypes>
+  </Header>
+  <Snippet>
+    <Code Language="Any">
+      <![CDATA[
+        <!-- Use Visual Studio LocalDB and App_Data/*.mdf database files-->
+        <add name="NorthwindConnectionString" connectionString="Data Source=(LocalDB)\MSSQLLocalDB;AttachDbFilename=|DataDirectory|Northwind.mdf;Integrated Security=True" providerName="System.Data.SqlClient"/>
+        <add name="TelerikConnectionString" connectionString="Data Source=(LocalDB)\MSSQLLocalDB;AttachDbFilename=|DataDirectory|Telerik.mdf;Integrated Security=True" providerName="System.Data.SqlClient"/>
+        <!-- Use local SqlExpress server and App_Data/*.mdf database-->
+        <!--<add name="NorthwindConnectionString" connectionString="Data Source=.\SQLEXPRESS;AttachDbFilename=|DataDirectory|Northwind.mdf;Integrated Security=True;User Instance=True" providerName="System.Data.SqlClient"/>-->
+        <!--<add name="TelerikConnectionString" connectionString="Data Source=.\SQLEXPRESS;AttachDbFilename=|DataDirectory|Telerik.mdf;Integrated Security=True;User Instance=True" providerName="System.Data.SqlClient"/>-->
+        <!-- Use local SqlExpress server and a database in the local SqlServer-->
+        <!--<add name="NorthwindConnectionString" connectionString="Data Source=.\SQLEXPRESS;Initial Catalog=Northwind;Integrated Security=True" providerName="System.Data.SqlClient"/>-->
+        <!--<add name="TelerikConnectionString" connectionString="Data Source=.\SQLEXPRESS;Initial Catalog=Telerik;Integrated Security=True" providerName="System.Data.SqlClient"/>-->
+    $end$]]>
+    </Code>
+  </Snippet>
+</CodeSnippet>
