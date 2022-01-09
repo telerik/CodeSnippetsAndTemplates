@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<CodeSnippets  xmlns="http://schemas.microsoft.com/VisualStudio/2005/CodeSnippet">
+  <CodeSnippet Format="1.0.0">
+    <Header>
+      <Title>RadPivotGrid Self Data Source</Title>
+      <Shortcut>radpivotgridselfdatasource</Shortcut>
+      <Description>CSharp code snippet for Generating a DataSource based on the PivotGrid's Markup definition</Description>
+      <Author>Progress</Author>
+      <SnippetTypes>
+        <SnippetType>Expansion</SnippetType>
+        <SnippetType>SurroundsWith</SnippetType>
+      </SnippetTypes>
+    </Header>
+    <Snippet>
+      <Code Language="csharp">
+<![CDATA[ 
+    protected void RadPivotGrid1_NeedDataSource(object sender, PivotGridNeedDataSourceEventArgs e)
+    {
+        var pivotGrid = (RadPivotGrid)sender;
+
+        pivotGrid.DataSource = PivotGridSelfDataSource(pivotGrid);
+    }
+
+    private DataTable PivotGridSelfDataSource(RadPivotGrid pivotGrid, int recordsCount = 100)
+    {
+        if (!pivotGrid.AllowPaging) recordsCount = 10;
+
+        DataTable dt = new DataTable();
+
+        foreach (PivotGridField field in pivotGrid.Fields)
+        {
+            string dataField = field.DataField;
+            Type type = typeof(string);
+
+            if (field is PivotGridAggregateField)
+            {
+                var aggregateField = (PivotGridAggregateField)field;
+
+                if (aggregateField.Aggregate != PivotGridAggregate.Count)
+                {
+                    type = typeof(double);
+                }
+            }
+
+            if (dt.Columns.IndexOf(dataField) > -1) continue;
+
+            dt.Columns.Add(new DataColumn(dataField, type));
+        }
+
+        for (int i = 0; i <= recordsCount; i++)
+        {
+            DataRow row = dt.NewRow();
+
+            foreach (DataColumn col in dt.Columns)
+            {
+                if (col.DataType == typeof(int))
+                {
+                    row[col.ColumnName] = i + 1;
+                }
+                else if (col.DataType == typeof(string))
+                {
+                    row[col.ColumnName] = col.ColumnName + i;
+                }
+                else if (col.DataType == typeof(DateTime))
+                {
+                    row[col.ColumnName] = DateTime.Now.Date.AddDays(i);
+                }
+                else if (col.DataType == typeof(decimal) || col.DataType == typeof(double) || col.DataType == typeof(float))
+                {
+                    row[col.ColumnName] = i * 0.1;
+                }
+            }
+            dt.Rows.Add(row);
+        }
+        return dt;
+    }
+]]>
+      </Code>
+      <Imports>
+        <Import>
+          <Namespace>System</Namespace>
+        </Import>
+        <Import>
+          <Namespace>System.Data</Namespace>
+        </Import>
+        <Import>
+          <Namespace>Telerik.Web.UI</Namespace>
+        </Import>
+      </Imports>
+    </Snippet>
+  </CodeSnippet>
+</CodeSnippets>
