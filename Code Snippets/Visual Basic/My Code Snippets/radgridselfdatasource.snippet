@@ -14,6 +14,11 @@
     <Snippet>
        <Code Language="VB">
 <![CDATA[
+    Protected Sub RadGrid1_NeedDataSource(sender As Object, e As GridNeedDataSourceEventArgs)
+        Dim grid = CType(sender, RadGrid)
+        grid.DataSource = GridSelfDataSource(grid)$end$
+    End Sub
+	
     Private Function GridSelfDataSource(ByVal grid As RadGrid, ByVal Optional recordsCount As Integer = 100) As DataTable
         If Not grid.AllowPaging Then recordsCount = 20
         Dim dataColumns = grid.MasterTableView.RenderColumns.OfType(Of IGridDataColumn)()
