@@ -16,52 +16,65 @@
 <![CDATA[
     Protected Sub RadGrid1_NeedDataSource(sender As Object, e As GridNeedDataSourceEventArgs)
         Dim grid = CType(sender, RadGrid)
-        grid.DataSource = GridSelfDataSource(grid)$end$
+        grid.DataSource = GridSelfDataSource(grid)
     End Sub
-	
+
     Private Function GridSelfDataSource(ByVal grid As RadGrid, ByVal Optional recordsCount As Integer = 100) As DataTable
         If Not grid.AllowPaging Then recordsCount = 20
-        Dim dataColumns = grid.MasterTableView.RenderColumns.OfType(Of IGridDataColumn)()
-        Dim dt As DataTable = New DataTable()
+        Dim dt = New DataTable()
+        Dim dataKeyNames = grid.MasterTableView.DataKeyNames
 
-        For Each boundCol As GridBoundColumn In dataColumns.OfType(Of GridBoundColumn)()
-            If String.IsNullOrEmpty(boundCol.DataField) OrElse dt.Columns.IndexOf(boundCol.DataField) > -1 Then Continue For
-            Dim coltype = boundCol.DataType
+        For Each dataKeyName As String In dataKeyNames
+            dt.Columns.Add(New DataColumn(dataKeyName, GetType(Integer)))
+        Next
+
+        If dataKeyNames.Length > 0 Then dt.PrimaryKey = New DataColumn() {dt.Columns(dataKeyNames(0))}
+        Dim dataColumns As IEnumerable(Of IGridDataColumn) = grid.MasterTableView.RenderColumns.OfType(Of IGridDataColumn)()
+
+        For Each boundCol As GridBoundColumn In dataColumns.Where(Function(col) col.[GetType]().Name = "GridBoundColumn").[Select](Function(col) TryCast(col, GridBoundColumn))
+            If String.IsNullOrEmpty(boundCol.DataField) Then Continue For
+            Dim dataType As Type = boundCol.DataType
 
             If boundCol.Aggregate <> GridAggregateFunction.None Then
 
                 Select Case boundCol.Aggregate
                     Case GridAggregateFunction.Sum, GridAggregateFunction.Min, GridAggregateFunction.Max, GridAggregateFunction.Avg
-                        coltype = GetType(Double)
+                        dataType = GetType(Double)
                 End Select
             End If
 
-            dt.Columns.Add(boundCol.DataField, coltype)
+            If dataKeyNames.Contains(boundCol.DataField) Then
+
+                If dataType <> GetType(String) Then
+                    dt.Columns(boundCol.DataField).DataType = dataType
+                End If
+            ElseIf dt.Columns.IndexOf(boundCol.DataField) < 0 Then
+                dt.Columns.Add(boundCol.DataField, dataType)
+            End If
         Next
 
-        For Each gridCol In dataColumns.Where(Function(col) Not (TypeOf col Is GridBoundColumn))
-            Dim numericCol = TryCast(gridCol, GridNumericColumn)
+        For Each gridCol As IGridDataColumn In dataColumns.Where(Function(col) col.[GetType]().Name <> "GridBoundColumn")
+            Dim activeDataField As String = gridCol.GetActiveDataField()
+            If String.IsNullOrEmpty(activeDataField) OrElse dt.Columns.IndexOf(activeDataField) > -1 Then Continue For
+            Dim numericCol As GridNumericColumn = TryCast(gridCol, GridNumericColumn)
 
             If numericCol IsNot Nothing Then
-                If String.IsNullOrEmpty(numericCol.DataField) OrElse dt.Columns.IndexOf(numericCol.DataField) >= 0 Then Continue For
                 dt.Columns.Add(numericCol.DataField, GetType(Integer))
             End If
 
-            Dim dateTimeCol = TryCast(gridCol, GridDateTimeColumn)
+            Dim dateTimeCol As GridDateTimeColumn = TryCast(gridCol, GridDateTimeColumn)
 
             If dateTimeCol IsNot Nothing Then
-                If String.IsNullOrEmpty(dateTimeCol.DataField) OrElse dt.Columns.IndexOf(dateTimeCol.DataField) >= 0 Then Continue For
                 dt.Columns.Add(dateTimeCol.DataField, GetType(DateTime))
             End If
 
-            Dim templateCol = TryCast(gridCol, GridTemplateColumn)
+            Dim templateCol As GridTemplateColumn = TryCast(gridCol, GridTemplateColumn)
 
             If templateCol IsNot Nothing Then
-                If String.IsNullOrEmpty(templateCol.DataField) OrElse dt.Columns.IndexOf(templateCol.DataField) >= 0 Then Continue For
                 dt.Columns.Add(templateCol.DataField, templateCol.DataType)
             End If
 
-            Dim hyperLinkCol = TryCast(gridCol, GridHyperLinkColumn)
+            Dim hyperLinkCol As GridHyperLinkColumn = TryCast(gridCol, GridHyperLinkColumn)
 
             If hyperLinkCol IsNot Nothing Then
                 If Not String.IsNullOrEmpty(hyperLinkCol.DataTextField) AndAlso dt.Columns.IndexOf(hyperLinkCol.DataTextField) < 0 Then dt.Columns.Add(hyperLinkCol.DataTextField, hyperLinkCol.DataType)
@@ -72,7 +85,7 @@
                 Next
             End If
 
-            Dim dropDownCol = TryCast(gridCol, GridDropDownColumn)
+            Dim dropDownCol As GridDropDownColumn = TryCast(gridCol, GridDropDownColumn)
 
             If dropDownCol IsNot Nothing Then
                 If Not String.IsNullOrEmpty(dropDownCol.DataField) AndAlso dt.Columns.IndexOf(dropDownCol.DataField) < 0 Then dt.Columns.Add(dropDownCol.DataField, dropDownCol.DataType)
@@ -81,19 +94,19 @@
                 If Not String.IsNullOrEmpty(dropDownCol.ListDataMember) AndAlso dt.Columns.IndexOf(dropDownCol.ListDataMember) < 0 Then dt.Columns.Add(dropDownCol.ListDataMember, dropDownCol.DataType)
             End If
 
-            Dim autoCompleteCol = TryCast(gridCol, GridAutoCompleteColumn)
+            Dim autoCompleteCol As GridAutoCompleteColumn = TryCast(gridCol, GridAutoCompleteColumn)
 
             If autoCompleteCol IsNot Nothing Then
                 If Not String.IsNullOrEmpty(autoCompleteCol.DataField) AndAlso dt.Columns.IndexOf(autoCompleteCol.DataField) < 0 Then dt.Columns.Add(autoCompleteCol.DataField, autoCompleteCol.DataType)
             End If
 
-            Dim attachmentCol = TryCast(gridCol, GridAttachmentColumn)
+            Dim attachmentCol As GridAttachmentColumn = TryCast(gridCol, GridAttachmentColumn)
 
             If attachmentCol IsNot Nothing Then
                 If Not String.IsNullOrEmpty(attachmentCol.DataTextField) AndAlso dt.Columns.IndexOf(attachmentCol.DataTextField) < 0 Then dt.Columns.Add(attachmentCol.DataTextField, attachmentCol.DataType)
             End If
 
-            Dim calculatedCol = TryCast(gridCol, GridCalculatedColumn)
+            Dim calculatedCol As GridCalculatedColumn = TryCast(gridCol, GridCalculatedColumn)
 
             If calculatedCol IsNot Nothing Then
 
@@ -103,21 +116,13 @@
             End If
         Next
 
-        Dim dataKeyNames = grid.MasterTableView.DataKeyNames
-
-        For Each dataKeyName As String In dataKeyNames
-            If dt.Columns.IndexOf(dataKeyName) < 0 Then dt.Columns.Add(New DataColumn(dataKeyName, GetType(Integer)))
-        Next
-
-        If dataKeyNames.Length > 0 Then dt.PrimaryKey = New DataColumn() {dt.Columns(dataKeyNames(0))}
-
         For i As Integer = 0 To recordsCount
             Dim row As DataRow = dt.NewRow()
 
             For Each col As DataColumn In dt.Columns
 
                 If col.DataType = GetType(Integer) Then
-                    row(col.ColumnName) = i + 1
+                    row(col.ColumnName) = i & 1
                 ElseIf col.DataType = GetType(String) Then
                     row(col.ColumnName) = col.ColumnName & i
                 ElseIf col.DataType = GetType(DateTime) Then
@@ -131,7 +136,7 @@
         Next
 
         Return dt
-    End Function  
+    End Function
 ]]>
       </Code>
       <Imports>
@@ -142,6 +147,12 @@
           <Namespace>System.Data</Namespace>
         </Import>
         <Import>
+          <Namespace>System.Linq</Namespace>
+        </Import>
+		<Import>
+          <Namespace>System.Collections.Generic</Namespace>
+        </Import>
+		<Import>
           <Namespace>Telerik.Web.UI</Namespace>
         </Import>
       </Imports>

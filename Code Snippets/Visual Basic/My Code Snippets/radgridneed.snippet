@@ -13,31 +13,33 @@
     </Header>
     <Snippet>
       <Code Language="VB">
-        <![CDATA[
+<![CDATA[
     Protected Sub RadGrid1_NeedDataSource(sender As Object, e As GridNeedDataSourceEventArgs)
-        RadGrid1.DataSource = OrdersTable() $end$
+        CType(sender, RadGrid).DataSource = OrdersTable() $end$
     End Sub
 
     Private Function OrdersTable() As DataTable
         Dim dt As New DataTable()
 
-        dt.Columns.Add(New DataColumn("OrderID", Type.GetType("System.Int32")))
-        dt.Columns.Add(New DataColumn("OrderDate", Type.GetType("System.DateTime")))
-        dt.Columns.Add(New DataColumn("Freight", Type.GetType("System.Decimal")))
-        dt.Columns.Add(New DataColumn("ShipName", Type.GetType("System.String")))
-        dt.Columns.Add(New DataColumn("ShipCountry", Type.GetType("System.String")))
+        dt.Columns.Add(New DataColumn("OrderID", GetType(Int32)))
+        dt.Columns.Add(New DataColumn("OrderDate", GetType(DateTime)))
+        dt.Columns.Add(New DataColumn("Freight", GetType(Double)))
+        dt.Columns.Add(New DataColumn("ShipName", GetType(String)))
+        dt.Columns.Add(New DataColumn("ShipCountry", GetType(String)))
 
         Dim PrimaryKeyColumns As DataColumn() = New DataColumn(0) {}
+
         PrimaryKeyColumns(0) = dt.Columns("OrderID")
+
         dt.PrimaryKey = PrimaryKeyColumns
 
-        For i As Integer = 0 To 70 - 1
+        For i As Integer = 0 To 100 - 1
             Dim index As Integer = i + 1
             Dim row As DataRow = dt.NewRow()
 
             row("OrderID") = index
-            row("OrderDate") = New DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day, 0, 0, 0).AddHours(index)
-            row("Freight") = index * 0.1 + index * 0.01
+            row("OrderDate") = DateTime.Now.Date.AddDays(i)
+            row("Freight") = index * 0.1
             row("ShipName") = "Name " & index
             row("ShipCountry") = "Country " & index
 
@@ -46,8 +48,7 @@
 
         Return dt
     End Function
-                
-                ]]>
+]]>
       </Code>
       <Imports>
         <Import>

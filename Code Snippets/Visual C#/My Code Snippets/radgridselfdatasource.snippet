@@ -14,28 +14,40 @@
     <Snippet>
       <Code Language="csharp">
 <![CDATA[ 
-	protected void RadGrid1_NeedDataSource(object sender, GridNeedDataSourceEventArgs e)
+    protected void RadGrid1_NeedDataSource(object sender, GridNeedDataSourceEventArgs e)
     {
         var grid = (RadGrid)sender;
-        grid.DataSource = GridSelfDataSource(grid);$end$
+        grid.DataSource = GridSelfDataSource(grid); $end$
     }
-
+	
     private DataTable GridSelfDataSource(RadGrid grid, int recordsCount = 100)
     {
         if (!grid.AllowPaging) recordsCount = 20;
 
-        var dataColumns = grid.MasterTableView.RenderColumns.OfType<IGridDataColumn>();
+        var dt = new DataTable();
 
-        DataTable dt = new DataTable();
+        // Access the DataKeyNames collection of the MasterTable
+        var dataKeyNames = grid.MasterTableView.DataKeyNames;
 
-        // First Loop through all Bound Columns.
-        foreach (GridBoundColumn boundCol in dataColumns.OfType<GridBoundColumn>())
+        // Loop through the DataKeyNames
+        foreach (string dataKeyName in dataKeyNames)
         {
-            // Ignore column if has no DataField property defined
-            if (string.IsNullOrEmpty(boundCol.DataField) || dt.Columns.IndexOf(boundCol.DataField) > -1) continue;
+            dt.Columns.Add(new DataColumn(dataKeyName, typeof(int)));
+        }
+
+        if (dataKeyNames.Length > 0)
+            dt.PrimaryKey = new DataColumn[] { dt.Columns[dataKeyNames[0]] };
+
+        IEnumerable<IGridDataColumn> dataColumns = grid.MasterTableView.RenderColumns.OfType<IGridDataColumn>();
+
+        // First Loop through all GridBoundColumns.
+        foreach (GridBoundColumn boundCol in dataColumns.Where(col => col.GetType().Name == "GridBoundColumn").Select(col => col as GridBoundColumn))
+        {
+            // Ignore the column if has no DataField property defined
+            if (string.IsNullOrEmpty(boundCol.DataField)) continue;
 
             // Assume String Type
-            var coltype = boundCol.DataType;
+            Type dataType = boundCol.DataType;
 
             if (boundCol.Aggregate != GridAggregateFunction.None)
             {
@@ -47,45 +59,53 @@
                     case GridAggregateFunction.Max:
                     case GridAggregateFunction.Avg:
                         // For aggregates like Sum, Min, Max, Avg change the type to double
-                        coltype = typeof(double);
+                        dataType = typeof(double);
                         break;
                 }
             }
-            dt.Columns.Add(boundCol.DataField, coltype);
+
+            if (dataKeyNames.Contains(boundCol.DataField))
+            {
+                if (dataType != typeof(string))
+                {
+                    dt.Columns[boundCol.DataField].DataType = dataType;
+                }
+            }
+            else if (dt.Columns.IndexOf(boundCol.DataField) < 0)
+            {
+                dt.Columns.Add(boundCol.DataField, dataType);
+            }
         }
 
         // Loop through the rest of the columns
-        foreach (var gridCol in dataColumns.Where(col => !(col is GridBoundColumn)))
+        foreach (IGridDataColumn gridCol in dataColumns.Where(col => col.GetType().Name != "GridBoundColumn"))
         {
-            var numericCol = gridCol as GridNumericColumn;
+            string activeDataField = gridCol.GetActiveDataField();
+
+            if (string.IsNullOrEmpty(activeDataField) || dt.Columns.IndexOf(activeDataField) > -1) continue;
+
+            GridNumericColumn numericCol = gridCol as GridNumericColumn;
             if (numericCol != null)
             {
-                if (string.IsNullOrEmpty(numericCol.DataField) || dt.Columns.IndexOf(numericCol.DataField) >= 0) continue;
-
                 dt.Columns.Add(numericCol.DataField, typeof(int));
             }
 
-            var dateTimeCol = gridCol as GridDateTimeColumn;
+            GridDateTimeColumn dateTimeCol = gridCol as GridDateTimeColumn;
             if (dateTimeCol != null)
             {
-                if (string.IsNullOrEmpty(dateTimeCol.DataField) || dt.Columns.IndexOf(dateTimeCol.DataField) >= 0) continue;
-
                 dt.Columns.Add(dateTimeCol.DataField, typeof(DateTime));
             }
 
-
-            var templateCol = gridCol as GridTemplateColumn;
+            GridTemplateColumn templateCol = gridCol as GridTemplateColumn;
             if (templateCol != null)
             {
-                if (string.IsNullOrEmpty(templateCol.DataField) || dt.Columns.IndexOf(templateCol.DataField) >= 0) continue;
-
                 dt.Columns.Add(templateCol.DataField, templateCol.DataType);
             }
 
-            var hyperLinkCol = gridCol as GridHyperLinkColumn;
+            GridHyperLinkColumn hyperLinkCol = gridCol as GridHyperLinkColumn;
             if (hyperLinkCol != null)
             {
-                if (!string.IsNullOrEmpty(hyperLinkCol.DataTextField) && dt.Columns.IndexOf(hyperLinkCol.DataTextField) < 0) 
+                if (!string.IsNullOrEmpty(hyperLinkCol.DataTextField) && dt.Columns.IndexOf(hyperLinkCol.DataTextField) < 0)
                     dt.Columns.Add(hyperLinkCol.DataTextField, hyperLinkCol.DataType);
 
                 foreach (string navUrl in hyperLinkCol.DataNavigateUrlFields)
@@ -96,7 +116,7 @@
                 }
             }
 
-            var dropDownCol = gridCol as GridDropDownColumn;
+            GridDropDownColumn dropDownCol = gridCol as GridDropDownColumn;
             if (dropDownCol != null)
             {
                 if (!string.IsNullOrEmpty(dropDownCol.DataField) && dt.Columns.IndexOf(dropDownCol.DataField) < 0)
@@ -112,21 +132,21 @@
                     dt.Columns.Add(dropDownCol.ListDataMember, dropDownCol.DataType);
             }
 
-            var autoCompleteCol = gridCol as GridAutoCompleteColumn;
+            GridAutoCompleteColumn autoCompleteCol = gridCol as GridAutoCompleteColumn;
             if (autoCompleteCol != null)
             {
                 if (!string.IsNullOrEmpty(autoCompleteCol.DataField) && dt.Columns.IndexOf(autoCompleteCol.DataField) < 0)
                     dt.Columns.Add(autoCompleteCol.DataField, autoCompleteCol.DataType);
             }
 
-            var attachmentCol = gridCol as GridAttachmentColumn;
+            GridAttachmentColumn attachmentCol = gridCol as GridAttachmentColumn;
             if (attachmentCol != null)
             {
                 if (!string.IsNullOrEmpty(attachmentCol.DataTextField) && dt.Columns.IndexOf(attachmentCol.DataTextField) < 0)
                     dt.Columns.Add(attachmentCol.DataTextField, attachmentCol.DataType);
             }
 
-            var calculatedCol = gridCol as GridCalculatedColumn;
+            GridCalculatedColumn calculatedCol = gridCol as GridCalculatedColumn;
             if (calculatedCol != null)
             {
                 foreach (string field in calculatedCol.DataFields)
@@ -136,19 +156,6 @@
                 }
             }
         }
-
-        // Loop through the DataKeyNames
-        var dataKeyNames = grid.MasterTableView.DataKeyNames;
-
-        foreach (string dataKeyName in dataKeyNames)
-        {
-            if (dt.Columns.IndexOf(dataKeyName) < 0)
-                dt.Columns.Add(new DataColumn(dataKeyName, typeof(int)));
-        }
-
-        if (dataKeyNames.Length > 0)
-            dt.PrimaryKey = new DataColumn[] { dt.Columns[dataKeyNames[0]] };
-
 
         for (int i = 0; i <= recordsCount; i++)
         {
@@ -187,6 +194,12 @@
           <Namespace>System.Data</Namespace>
         </Import>
         <Import>
+          <Namespace>System.Linq</Namespace>
+        </Import>
+		<Import>
+          <Namespace>System.Collections.Generic</Namespace>
+        </Import>
+		<Import>
           <Namespace>Telerik.Web.UI</Namespace>
         </Import>
       </Imports>
