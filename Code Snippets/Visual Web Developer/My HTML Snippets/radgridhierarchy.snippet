@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<CodeSnippet Format="1.1.0" xmlns="http://schemas.microsoft.com/VisualStudio/2005/CodeSnippet">
+  <Header>
+    <Title>RadGrid with 2 level Hierarchy with NeedDataSource</Title>
+    <Author>Progress</Author>
+    <Shortcut>radgridhierarchy</Shortcut>
+    <Description>Markup snippet for a RadGrid control with a 2 level Hierarchy using the NeedDataSource event.</Description>
+    <SnippetTypes>
+      <SnippetType>Expansion</SnippetType>
+    </SnippetTypes>
+  </Header>
+  <Snippet>
+    <Code Language="HTML">
+      <![CDATA[
+        <telerik:RadGrid ID="RadGrid1" runat="server" AllowPaging="True" Width="800px"
+            OnNeedDataSource="RadGrid1_NeedDataSource"
+            OnDetailTableDataBind="RadGrid1_DetailTableDataBind">
+            <MasterTableView Name="Orders" AutoGenerateColumns="False" DataKeyNames="OrderID">
+                <Columns>
+                    <telerik:GridNumericColumn DataField="OrderID" DataType="System.Int32"
+                        FilterControlAltText="Filter OrderID column" HeaderText="OrderID"
+                        ReadOnly="True" SortExpression="OrderID" UniqueName="OrderID">
+                    </telerik:GridNumericColumn>
+                    <telerik:GridDateTimeColumn DataField="OrderDate" DataType="System.DateTime"
+                        FilterControlAltText="Filter OrderDate column" HeaderText="OrderDate"
+                        SortExpression="OrderDate" UniqueName="OrderDate">
+                    </telerik:GridDateTimeColumn>
+                    <telerik:GridNumericColumn DataField="Freight" DataType="System.Decimal"
+                        FilterControlAltText="Filter Freight column" HeaderText="Freight"
+                        SortExpression="Freight" UniqueName="Freight">
+                    </telerik:GridNumericColumn>
+                    <telerik:GridBoundColumn DataField="ShipName"
+                        FilterControlAltText="Filter ShipName column" HeaderText="ShipName"
+                        SortExpression="ShipName" UniqueName="ShipName">
+                    </telerik:GridBoundColumn>
+                    <telerik:GridBoundColumn DataField="ShipCountry"
+                        FilterControlAltText="Filter ShipCountry column" HeaderText="ShipCountry"
+                        SortExpression="ShipCountry" UniqueName="ShipCountry">
+                    </telerik:GridBoundColumn>
+                </Columns>
+                <DetailTables>
+                    <telerik:GridTableView Name="OrderDetails" AutoGenerateColumns="false">
+                        <Columns>
+                            <telerik:GridNumericColumn DataField="OrderID" DataType="System.Int32"
+                                FilterControlAltText="Filter OrderID column" HeaderText="OrderID"
+                                ReadOnly="True" SortExpression="OrderID" UniqueName="OrderID">
+                            </telerik:GridNumericColumn>
+                            <telerik:GridNumericColumn DataField="UnitPrice" DataType="System.Decimal"
+                                FilterControlAltText="Filter UnitPrice column" HeaderText="UnitPrice"
+                                SortExpression="UnitPrice" UniqueName="UnitPrice">
+                            </telerik:GridNumericColumn>
+                            <telerik:GridNumericColumn DataField="Quantity" DataType="System.Int32"
+                                FilterControlAltText="Filter Quantity column" HeaderText="Quantity"
+                                SortExpression="Quantity" UniqueName="Quantity">
+                            </telerik:GridNumericColumn>
+                            <telerik:GridNumericColumn DataField="Discount" DataType="System.Decimal"
+                                FilterControlAltText="Filter Discount column" HeaderText="Discount"
+                                SortExpression="Discount" UniqueName="Discount">
+                            </telerik:GridNumericColumn>
+                        </Columns>
+                    </telerik:GridTableView>
+                </DetailTables>
+            </MasterTableView>
+            <ClientSettings>
+                <ClientEvents OnRowContextMenu="OnRowContextMenu" OnRowClick="OnRowClick" />
+            </ClientSettings>
+        </telerik:RadGrid>
+        ]]>
+    </Code>
+  </Snippet>
+</CodeSnippet>

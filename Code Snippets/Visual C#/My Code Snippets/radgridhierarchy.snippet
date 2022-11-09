@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<CodeSnippets  xmlns="http://schemas.microsoft.com/VisualStudio/2005/CodeSnippet">
+  <CodeSnippet Format="1.0.0">
+    <Header>
+      <Title>RadGrid with 2 level Hierarchy with NeedDataSource</Title>
+    <Author>Progress</Author>
+    <Shortcut>radgridhierarchy</Shortcut>
+    <Description>Markup snippet for a RadGrid control with a 2 level Hierarchy using the NeedDataSource event.</Description>
+      <SnippetTypes>
+        <SnippetType>Expansion</SnippetType>
+        <SnippetType>SurroundsWith</SnippetType>
+      </SnippetTypes>
+    </Header>
+    <Snippet>
+      <Code Language="csharp">
+<![CDATA[ 
+    protected void RadGrid1_NeedDataSource(object sender, GridNeedDataSourceEventArgs e)
+    {
+        (sender as RadGrid).DataSource = OrdersTable();
+    }
+
+    protected void RadGrid1_DetailTableDataBind(object sender, GridDetailTableDataBindEventArgs e)
+    {
+        if (e.DetailTableView.Name == "OrderDetails")
+        {
+            GridDataItem parentItem = e.DetailTableView.ParentItem;
+
+            int orderId = (int)parentItem.GetDataKeyValue("OrderID");
+
+            e.DetailTableView.DataSource = OrderDetailsTable().Select(string.Format("OrderID = '{0}'", orderId));
+        }
+    }
+
+    private DataTable OrdersTable()
+    {
+        DataTable dt = new DataTable();
+
+        dt.Columns.Add(new DataColumn("OrderID", typeof(int)));
+        dt.Columns.Add(new DataColumn("OrderDate", typeof(DateTime)));
+        dt.Columns.Add(new DataColumn("Freight", typeof(double)));
+        dt.Columns.Add(new DataColumn("ShipName", typeof(string)));
+        dt.Columns.Add(new DataColumn("ShipCountry", typeof(string)));
+
+        dt.PrimaryKey = new DataColumn[] { dt.Columns["OrderID"] };
+
+        for (int i = 0; i < 100; i++)
+        {
+            int index = i + 1;
+
+            DataRow row = dt.NewRow();
+
+            row["OrderID"] = index;
+            row["OrderDate"] = DateTime.Now.Date.AddDays(index);
+            row["Freight"] = index * 0.01;
+            row["ShipName"] = "Name " + index;
+            row["ShipCountry"] = "Country " + index;
+
+            dt.Rows.Add(row);
+        }
+
+        return dt;
+    }
+    private DataTable OrderDetailsTable()
+    {
+        DataTable dt = new DataTable();
+
+        dt.Columns.Add(new DataColumn("OrderID", typeof(int)));
+        dt.Columns.Add(new DataColumn("UnitPrice", typeof(decimal)));
+        dt.Columns.Add(new DataColumn("Quantity", typeof(int)));
+        dt.Columns.Add(new DataColumn("Discount", typeof(decimal)));
+
+        var orders = OrdersTable();
+
+        int itemsPerOrder = 4;
+
+        for (int rowIndex = 0; rowIndex < orders.Rows.Count; rowIndex++)
+        {
+            DataRow currentOrder = orders.Rows[rowIndex];
+
+            for (int j = 0; j < itemsPerOrder; j++)
+            {
+                int index = j + 1;
+
+                DataRow row = dt.NewRow();
+
+                row["OrderID"] = currentOrder["OrderID"];
+
+                row["UnitPrice"] = index;
+                row["Quantity"] = index;
+                row["Discount"] = index * 0.01;
+
+                dt.Rows.Add(row);
+            }
+        }
+        return dt;
+    }
+]]>
+      </Code>
+      <Imports>
+        <Import>
+          <Namespace>System</Namespace>
+        </Import>
+        <Import>
+          <Namespace>System.Data</Namespace>
+        </Import>
+        <Import>
+          <Namespace>Telerik.Web.UI</Namespace>
+        </Import>
+      </Imports>
+    </Snippet>
+  </CodeSnippet>
+</CodeSnippets>
