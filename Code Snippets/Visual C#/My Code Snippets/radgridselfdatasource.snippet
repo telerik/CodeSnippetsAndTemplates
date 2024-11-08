@@ -3,7 +3,7 @@
   <CodeSnippet Format="1.0.0">
     <Header>
       <Title>RadGrid Self Data Source</Title>
-      <Shortcut>radgridselfdatasource</Shortcut>
+      <Shortcut>gridsnippet</Shortcut>
       <Description>CSharp code snippet for Generating a DataSource based on the Grid's Markup definition</Description>
       <Author>Progress</Author>
       <SnippetTypes>
@@ -13,177 +13,152 @@
     </Header>
     <Snippet>
       <Code Language="csharp">
-<![CDATA[ 
-    protected void RadGrid1_NeedDataSource(object sender, GridNeedDataSourceEventArgs e)
+<![CDATA[$end$
+protected void RadGrid1_NeedDataSource(object sender, GridNeedDataSourceEventArgs e)
+{
+    RadGrid grid = (RadGrid) sender;
+    grid.DataSource = GridSelfDataSource(grid);
+}
+
+#region Data Source Generator for RadGrid
+private DataTable GridSelfDataSource(RadGrid grid, int recordsCount = 20)
+{
+    var dt = new DataTable();
+
+    foreach (string dataKeyName in grid.MasterTableView.DataKeyNames)
     {
-        var grid = (RadGrid)sender;
-        grid.DataSource = GridSelfDataSource(grid); $end$
+        dt.Columns.Add(dataKeyName, typeof(int));
     }
-	
-    private DataTable GridSelfDataSource(RadGrid grid, int recordsCount = 100)
+
+    foreach (IGridDataColumn gridDataCol in grid.MasterTableView.RenderColumns.Where(col => col is IGridDataColumn))
     {
-        if (!grid.AllowPaging) recordsCount = 20;
+        string dataField = gridDataCol.GetActiveDataField();
 
-        var dt = new DataTable();
+        if (string.IsNullOrEmpty(dataField)) continue;
 
-        // Access the DataKeyNames collection of the MasterTable
-        var dataKeyNames = grid.MasterTableView.DataKeyNames;
+        Type dataType = GetColumnDataType(gridDataCol);
 
-        // Loop through the DataKeyNames
-        foreach (string dataKeyName in dataKeyNames)
+        if (gridDataCol.GetType().Name == "GridHyperLinkColumn")
         {
-            dt.Columns.Add(new DataColumn(dataKeyName, typeof(int)));
-        }
+            GridHyperLinkColumn hyperLinkCol = (GridHyperLinkColumn) gridDataCol;
 
-        if (dataKeyNames.Length > 0)
-            dt.PrimaryKey = new DataColumn[] { dt.Columns[dataKeyNames[0]] };
+            AddColumnToTable(dt, hyperLinkCol.DataTextField, typeof(string));
 
-        IEnumerable<IGridDataColumn> dataColumns = grid.MasterTableView.RenderColumns.OfType<IGridDataColumn>();
-
-        // First Loop through all GridBoundColumns.
-        foreach (GridBoundColumn boundCol in dataColumns.Where(col => col.GetType().Name == "GridBoundColumn").Select(col => col as GridBoundColumn))
-        {
-            // Ignore the column if has no DataField property defined
-            if (string.IsNullOrEmpty(boundCol.DataField)) continue;
-
-            // Assume String Type
-            Type dataType = boundCol.DataType;
-
-            if (boundCol.Aggregate != GridAggregateFunction.None)
+            foreach (string fieldName in hyperLinkCol.DataNavigateUrlFields)
             {
-                // If Column has no DataType specified but Aggregates
-                switch (boundCol.Aggregate)
-                {
-                    case GridAggregateFunction.Sum:
-                    case GridAggregateFunction.Min:
-                    case GridAggregateFunction.Max:
-                    case GridAggregateFunction.Avg:
-                        // For aggregates like Sum, Min, Max, Avg change the type to double
-                        dataType = typeof(double);
-                        break;
-                }
-            }
-
-            if (dataKeyNames.Contains(boundCol.DataField))
-            {
-                if (dataType != typeof(string))
-                {
-                    dt.Columns[boundCol.DataField].DataType = dataType;
-                }
-            }
-            else if (dt.Columns.IndexOf(boundCol.DataField) < 0)
-            {
-                dt.Columns.Add(boundCol.DataField, dataType);
+                AddColumnToTable(dt, fieldName, typeof(string));
             }
         }
-
-        // Loop through the rest of the columns
-        foreach (IGridDataColumn gridCol in dataColumns.Where(col => col.GetType().Name != "GridBoundColumn"))
+        else if (gridDataCol.GetType().Name == "GridDropDownColumn")
         {
-            string activeDataField = gridCol.GetActiveDataField();
-
-            if (string.IsNullOrEmpty(activeDataField) || dt.Columns.IndexOf(activeDataField) > -1) continue;
-
-            GridNumericColumn numericCol = gridCol as GridNumericColumn;
-            if (numericCol != null)
-            {
-                dt.Columns.Add(numericCol.DataField, typeof(int));
-            }
-
-            GridDateTimeColumn dateTimeCol = gridCol as GridDateTimeColumn;
-            if (dateTimeCol != null)
-            {
-                dt.Columns.Add(dateTimeCol.DataField, typeof(DateTime));
-            }
-
-            GridTemplateColumn templateCol = gridCol as GridTemplateColumn;
-            if (templateCol != null)
-            {
-                dt.Columns.Add(templateCol.DataField, templateCol.DataType);
-            }
-
-            GridHyperLinkColumn hyperLinkCol = gridCol as GridHyperLinkColumn;
-            if (hyperLinkCol != null)
-            {
-                if (!string.IsNullOrEmpty(hyperLinkCol.DataTextField) && dt.Columns.IndexOf(hyperLinkCol.DataTextField) < 0)
-                    dt.Columns.Add(hyperLinkCol.DataTextField, hyperLinkCol.DataType);
-
-                foreach (string navUrl in hyperLinkCol.DataNavigateUrlFields)
-                {
-                    if (dt.Columns.IndexOf(navUrl) >= 0) continue;
-
-                    dt.Columns.Add(navUrl, hyperLinkCol.DataType);
-                }
-            }
-
-            GridDropDownColumn dropDownCol = gridCol as GridDropDownColumn;
-            if (dropDownCol != null)
-            {
-                if (!string.IsNullOrEmpty(dropDownCol.DataField) && dt.Columns.IndexOf(dropDownCol.DataField) < 0)
-                    dt.Columns.Add(dropDownCol.DataField, dropDownCol.DataType);
-
-                if (!string.IsNullOrEmpty(dropDownCol.ListTextField) && dt.Columns.IndexOf(dropDownCol.ListTextField) < 0)
-                    dt.Columns.Add(dropDownCol.ListTextField, dropDownCol.DataType);
-
-                if (!string.IsNullOrEmpty(dropDownCol.ListValueField) && dt.Columns.IndexOf(dropDownCol.ListValueField) < 0)
-                    dt.Columns.Add(dropDownCol.ListValueField, dropDownCol.DataType);
-
-                if (!string.IsNullOrEmpty(dropDownCol.ListDataMember) && dt.Columns.IndexOf(dropDownCol.ListDataMember) < 0)
-                    dt.Columns.Add(dropDownCol.ListDataMember, dropDownCol.DataType);
-            }
-
-            GridAutoCompleteColumn autoCompleteCol = gridCol as GridAutoCompleteColumn;
-            if (autoCompleteCol != null)
-            {
-                if (!string.IsNullOrEmpty(autoCompleteCol.DataField) && dt.Columns.IndexOf(autoCompleteCol.DataField) < 0)
-                    dt.Columns.Add(autoCompleteCol.DataField, autoCompleteCol.DataType);
-            }
-
-            GridAttachmentColumn attachmentCol = gridCol as GridAttachmentColumn;
-            if (attachmentCol != null)
-            {
-                if (!string.IsNullOrEmpty(attachmentCol.DataTextField) && dt.Columns.IndexOf(attachmentCol.DataTextField) < 0)
-                    dt.Columns.Add(attachmentCol.DataTextField, attachmentCol.DataType);
-            }
-
-            GridCalculatedColumn calculatedCol = gridCol as GridCalculatedColumn;
-            if (calculatedCol != null)
-            {
-                foreach (string field in calculatedCol.DataFields)
-                {
-                    if (dt.Columns.IndexOf(field) < 0)
-                        dt.Columns.Add(field, typeof(int));
-                }
-            }
+            GridDropDownColumn dropDownCol = (GridDropDownColumn) gridDataCol;
+            AddColumnToTable(dt, dropDownCol.ListTextField, typeof(string));
+            AddColumnToTable(dt, dropDownCol.ListValueField, typeof(string));
         }
-
-        for (int i = 0; i <= recordsCount; i++)
+        if (gridDataCol.GetType().Name == "GridAutoCompleteColumn")
         {
-            DataRow row = dt.NewRow();
-
-            foreach (DataColumn col in dt.Columns)
-            {
-                if (col.DataType == typeof(int))
-                {
-                    row[col.ColumnName] = i + 1;
-                }
-                else if (col.DataType == typeof(string))
-                {
-                    row[col.ColumnName] = col.ColumnName + i;
-                }
-                else if (col.DataType == typeof(DateTime))
-                {
-                    row[col.ColumnName] = DateTime.Now.Date.AddDays(i);
-                }
-                else if (col.DataType == typeof(decimal) || col.DataType == typeof(double) || col.DataType == typeof(float))
-                {
-                    row[col.ColumnName] = i * 0.1;
-                }
-            }
-            dt.Rows.Add(row);
+            GridAutoCompleteColumn autoCompleteCol = (GridAutoCompleteColumn) gridDataCol;
+            AddColumnToTable(dt, autoCompleteCol.DataTextField, typeof(string));
+            AddColumnToTable(dt, autoCompleteCol.DataValueField, typeof(string));
         }
-        return dt;
+        if (gridDataCol.GetType().Name == "GridAttachmentColumn")
+        {
+            GridAttachmentColumn attachmentCol = (GridAttachmentColumn) gridDataCol;
+            AddColumnToTable(dt, attachmentCol.DataTextField, typeof(string));
+            AddColumnToTable(dt, attachmentCol.AttachmentDataField, typeof(string));
+        }
+        if (gridDataCol.GetType().Name == "GridCalculatedColumn")
+        {
+            GridDropDownColumn dropDownCol = (GridDropDownColumn) gridDataCol;
+            AddColumnToTable(dt, dropDownCol.ListTextField, typeof(string));
+        }
+        else
+        {
+            AddColumnToTable(dt, dataField, dataType);
+        }
     }
+
+    for (int i = 0; i <= recordsCount; i++)
+    {
+        DataRow row = dt.NewRow();
+
+        foreach (DataColumn col in dt.Columns)
+        {
+            if (col.DataType == typeof(int))
+            {
+                row[col.ColumnName] = i + 1;
+            }
+            else if (col.DataType == typeof(string))
+            {
+                row[col.ColumnName] = col.ColumnName + i;
+            }
+            else if (col.DataType == typeof(DateTime))
+            {
+                row[col.ColumnName] = DateTime.Now.Date.AddDays(i);
+            }
+            else if (col.DataType == typeof(decimal) || col.DataType == typeof(double) || col.DataType == typeof(float))
+            {
+                row[col.ColumnName] = i * 0.1;
+            }
+            else if (col.DataType == typeof(bool))
+            {
+                row[col.ColumnName] = i % 3 == 0;
+            }
+        }
+        dt.Rows.Add(row);
+    }
+
+    return dt;
+}
+
+private Type GetColumnDataType(IGridDataColumn col)
+{
+    // Aggregates for Numeric values only
+    int[] aggregateTypes = new int[] { (int) GridAggregateFunction.Sum, (int) GridAggregateFunction.Min, (int) GridAggregateFunction.Max, (int) GridAggregateFunction.Avg };
+
+    Type dataType = ((GridColumn) col).DataType;
+
+    switch (col.GetType().Name)
+    {
+        case "GridBoundColumn":
+            GridBoundColumn boundCol = (GridBoundColumn) col;
+            if (aggregateTypes.Contains((int) boundCol.Aggregate)) dataType = typeof(decimal);
+            break;
+        case "GridNumericColumn":
+            GridNumericColumn numericCol = (GridNumericColumn) col;
+            if (aggregateTypes.Contains((int) numericCol.Aggregate)) dataType = typeof(decimal);
+            break;
+        case "GridDateTimeColumn":
+            GridDateTimeColumn dateTimeCol = (GridDateTimeColumn) col;
+            if (aggregateTypes.Contains((int) dateTimeCol.Aggregate)) dataType = typeof(DateTime);
+            break;
+        case "GridTemplateColumns":
+            GridTemplateColumn templateCol = (GridTemplateColumn) col;
+            if (aggregateTypes.Contains((int) templateCol.Aggregate)) dataType = typeof(decimal);
+            break;
+        case "GridCheckBoxColumn":
+            dataType = typeof(bool);
+            break;
+    }
+
+    return dataType;
+}
+
+private void AddColumnToTable(DataTable dt, string columnName, Type dataType)
+{
+    if (dt.Columns.IndexOf(columnName) > -1)
+    {
+        if (dataType != typeof(string))
+        {
+            dt.Columns[columnName].DataType = dataType;
+        }
+    }
+    else
+    {
+        dt.Columns.Add(columnName, dataType);
+    }
+}
+#endregion
 ]]>
       </Code>
       <Imports>

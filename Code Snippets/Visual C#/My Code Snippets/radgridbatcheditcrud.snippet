@@ -1,0 +1,151 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<CodeSnippets  xmlns="http://schemas.microsoft.com/VisualStudio/2005/CodeSnippet">
+  <CodeSnippet Format="1.0.0">
+    <Header>
+      <Title>RadGrid BatchEditing CRUD</Title>
+      <Author>Progress</Author>
+      <Shortcut>gridsnippet</Shortcut>
+      <Description>Markup snippet for a RadGrid control with CRUD operations using the BatchEditing functionality.</Description>
+      <SnippetTypes>
+        <SnippetType>Expansion</SnippetType>
+      </SnippetTypes>
+    </Header>
+    <Snippet>
+      <Code Language="csharp">
+<![CDATA[
+        $end$
+
+        #region Datasource stored in Session
+        public DataTable SessionDataSource
+        {
+            get
+            {
+                string sessionKey = "SessionDataSource";
+
+                DataTable dt = Session[sessionKey] as DataTable;
+
+                if (dt == null || !IsPostBack)
+                {
+                    dt = new DataTable();
+
+                    dt.Columns.Add(new DataColumn("OrderID", typeof(int)));
+                    dt.Columns.Add(new DataColumn("OrderDate", typeof(DateTime)));
+                    dt.Columns.Add(new DataColumn("Freight", typeof(decimal)));
+                    dt.Columns.Add(new DataColumn("ShipName", typeof(string)));
+                    dt.Columns.Add(new DataColumn("ShipCountry", typeof(string)));
+
+                    dt.PrimaryKey = new DataColumn[] { dt.Columns["OrderID"] };
+
+                    for (int i = 0; i < 20; i++)
+                    {
+                        int index = i + 1;
+
+                        DataRow row = dt.NewRow();
+
+                        row["OrderID"] = index;
+                        row["OrderDate"] = DateTime.Now.Date.AddDays(index);
+                        row["Freight"] = index * 0.1 + index * 0.01;
+                        row["ShipName"] = "Name " + index;
+                        row["ShipCountry"] = "Country " + index;
+
+                        dt.Rows.Add(row);
+                    }
+
+                    Session[sessionKey] = dt;
+                }
+                return dt;
+            }
+        }
+        #endregion
+
+        #region Data-binding
+        protected void RadGrid1_NeedDataSource(object sender, GridNeedDataSourceEventArgs e)
+        {
+            (sender as RadGrid).DataSource = SessionDataSource;
+        }
+        #endregion
+
+        #region Insert/Update/Delete operations
+
+        protected void RadGrid1_BatchEditCommand(object sender, GridBatchEditingEventArgs e)
+        {
+            foreach (GridBatchEditingCommand command in e.Commands)
+            {
+                Hashtable oldValues = command.OldValues;
+                Hashtable newValues = command.NewValues;
+
+                if (command.Type == GridBatchEditingCommandType.Insert)
+                {
+                    newValues["OrderID"] = CreateNewOrderId();
+
+                    DataRow rowToCreate = SessionDataSource.NewRow();
+
+                    foreach (string key in newValues.Keys)
+                    {
+                        rowToCreate[key] = newValues[key];
+                    }
+
+                    SessionDataSource.Rows.Add(rowToCreate);
+                }
+                else if (command.Type == GridBatchEditingCommandType.Update)
+                {
+                    DataRow rowToUpdate = GetRowById((int) newValues["OrderID"]);
+
+                    foreach (string key in newValues.Keys)
+                    {
+                        rowToUpdate[key] = newValues[key];
+                    }
+                }
+                else if (command.Type == GridBatchEditingCommandType.Delete)
+                {
+                    DataRow rowToDelete = GetRowById((int) newValues["OrderID"]);
+
+                    if (rowToDelete != null)
+                    {
+                        SessionDataSource.Rows.Remove(rowToDelete);
+                    }
+                }
+            }
+        }
+        #endregion
+
+        #region Helper Methods
+        private int CreateNewOrderId()
+        {
+            int orderId = 1;
+
+            if (SessionDataSource.Rows.Count > 0)
+            {
+                orderId = (int) SessionDataSource.Select("OrderID = MAX(OrderID)").FirstOrDefault()["OrderID"] + 1;
+            }
+
+            return orderId;
+        }
+
+        private DataRow GetRowById(int orderId)
+        {
+            return SessionDataSource.Select(string.Format("OrderID='{0}'", orderId)).FirstOrDefault();
+        }
+        #endregion
+]]>
+      </Code>
+      <Imports>
+        <Import>
+          <Namespace>System</Namespace>
+        </Import>
+        <Import>
+          <Namespace>System.Collections</Namespace>
+        </Import>
+        <Import>
+          <Namespace>System.Data</Namespace>
+        </Import>
+        <Import>
+          <Namespace>System.Linq</Namespace>
+        </Import>
+        <Import>
+          <Namespace>Telerik.Web.UI</Namespace>
+        </Import>
+      </Imports>
+    </Snippet>
+  </CodeSnippet>
+</CodeSnippets>

@@ -4,7 +4,7 @@
     <Header>
       <Title>RadGrid with 2 level Hierarchy with NeedDataSource</Title>
     <Author>Progress</Author>
-    <Shortcut>radgridhierarchy</Shortcut>
+    <Shortcut>gridsnippet</Shortcut>
     <Description>Markup snippet for a RadGrid control with a 2 level Hierarchy using the NeedDataSource event.</Description>
       <SnippetTypes>
         <SnippetType>Expansion</SnippetType>
@@ -13,7 +13,9 @@
     </Header>
     <Snippet>
       <Code Language="csharp">
-<![CDATA[ 
+<![CDATA[
+    $end$
+
     protected void RadGrid1_NeedDataSource(object sender, GridNeedDataSourceEventArgs e)
     {
         (sender as RadGrid).DataSource = OrdersTable();

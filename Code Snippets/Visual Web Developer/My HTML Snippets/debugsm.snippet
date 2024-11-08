@@ -1,0 +1,24 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<CodeSnippet Format="1.1.0" xmlns="http://schemas.microsoft.com/VisualStudio/2005/CodeSnippet">
+  <Header>
+    <Title>Debug ScriptManager</Title>
+    <Author>Progress</Author>
+    <Shortcut>debugsm</Shortcut>
+    <Description>Code snippet for Debug ScriptManager used in development</Description>
+    <SnippetTypes>
+      <SnippetType>Expansion</SnippetType>
+    </SnippetTypes>
+  </Header>
+  <Snippet>
+    <Code Language="html"><![CDATA[
+        <%@ Register Namespace="Telerik.Web.UI.Debug" TagPrefix="debug" %>
+        <debug:DebugScriptManager runat="server" ID="DebugScriptManager1" ProjectUrl="https://localhost/Telerik.Web.UI/" EnableDebugOutput="true">
+            <Scripts>
+                <asp:ScriptReference Assembly="Telerik.Web.UI" Name="Telerik.Web.UI.Common.Core.js" />
+                <asp:ScriptReference Assembly="Telerik.Web.UI" Name="Telerik.Web.UI.Common.jQuery.js" />
+                <asp:ScriptReference Assembly="Telerik.Web.UI" Name="Telerik.Web.UI.Common.jQueryInclude.js" />
+            </Scripts>
+        </debug:DebugScriptManager>
+        $end$]]></Code>
+  </Snippet>
+</CodeSnippet>

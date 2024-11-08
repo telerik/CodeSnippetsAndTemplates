@@ -1,26 +1,27 @@
-﻿<?xml version="1.0" encoding="utf-8" ?>
+<?xml version="1.0" encoding="utf-8" ?>
 <CodeSnippet Format="1.1.0" xmlns="http://schemas.microsoft.com/VisualStudio/2005/CodeSnippet">
   <Header>
-    <Title>RadGrid NeedDataSource</Title>
-      <Shortcut>radgridneed</Shortcut>
-      <Description>CSharp code snippets for RadGrid with Advanced DataBinding using NeedDataSource</Description>
-      <Author>Progress</Author>
+    <Title>RadGrid CRUD with BatchEditing</Title>
+    <Author>Progress</Author>
+    <Shortcut>radgridbatcheditcrud</Shortcut>
+    <Description>Markup snippet for a RadGrid control with CRUD operations using the BatchEditing functionality.</Description>
     <SnippetTypes>
       <SnippetType>Expansion</SnippetType>
     </SnippetTypes>
   </Header>
   <Snippet>
     <Code Language="HTML">
-      <![CDATA[$end$
-      <telerik:RadGrid ID="RadGrid1" runat="server" AllowSorting="true" AllowPaging="True" Width="800px" OnNeedDataSource="RadGrid1_NeedDataSource" AllowFilteringByColumn="true">
-        <MasterTableView AutoGenerateColumns="False" DataKeyNames="OrderID">
+      <![CDATA[
+      <telerik:RadGrid ID="RadGrid1" runat="server" AllowPaging="True" Width="800px" OnNeedDataSource="RadGrid1_NeedDataSource" OnBatchEditCommand="RadGrid1_BatchEditCommand">
+        <MasterTableView AutoGenerateColumns="False" DataKeyNames="OrderID" CommandItemDisplay="Top" EditMode="Batch">
+            <BatchEditingSettings HighlightDeletedRows="true" />
             <Columns>
                 <telerik:GridBoundColumn DataField="OrderID" DataType="System.Int32"
                     FilterControlAltText="Filter OrderID column" HeaderText="OrderID"
                     ReadOnly="True" SortExpression="OrderID" UniqueName="OrderID">
                 </telerik:GridBoundColumn>
-                <telerik:GridDateTimeColumn DataField="OrderDate" DataType="System.DateTime" FilterControlWidth="160px"
-                    FilterControlAltText="Filter OrderDate column" HeaderText="OrderDate" DataFormatString="{0: MM/dd/yyyy}"
+                <telerik:GridDateTimeColumn DataField="OrderDate" DataType="System.DateTime" DataFormatString="{0:MM/dd/yyyy}"
+                    FilterControlAltText="Filter OrderDate column" HeaderText="OrderDate"
                     SortExpression="OrderDate" UniqueName="OrderDate">
                 </telerik:GridDateTimeColumn>
                 <telerik:GridNumericColumn DataField="Freight" DataType="System.Decimal"
@@ -35,10 +36,11 @@
                     FilterControlAltText="Filter ShipCountry column" HeaderText="ShipCountry"
                     SortExpression="ShipCountry" UniqueName="ShipCountry">
                 </telerik:GridBoundColumn>
+                <telerik:GridClientDeleteColumn HeaderText="Delete"></telerik:GridClientDeleteColumn>
             </Columns>
         </MasterTableView>
     </telerik:RadGrid>
-        ]]>
+    ]]>
     </Code>
   </Snippet>
 </CodeSnippet>
