@@ -1,0 +1,163 @@
+<?xml version="1.0" encoding="utf-8"?>
+<CodeSnippets xmlns="http://schemas.microsoft.com/VisualStudio/2005/CodeSnippet">
+  <CodeSnippet Format="1.0.0">
+    <Header>
+      <Title>Debug ScriptManager</Title>
+      <Shortcut>debugsm</Shortcut>
+      <Description>CSharp - Code snippet for Debug ScriptManager Class</Description>
+      <Author>Progress</Author>
+      <SnippetTypes>
+        <SnippetType>Expansion</SnippetType>
+        <SnippetType>SurroundsWith</SnippetType>
+      </SnippetTypes>
+    </Header>
+    <Snippet>
+      <Code Language="csharp"><![CDATA[
+namespace Telerik.Web.UI.Debug
+{
+	public class DebugScriptManager : ScriptManager
+	{
+		private static readonly List<string> controlsWithDots = new List<string>() {
+			"RadMenu", "html5", "RadComboBox", "RadGrid",
+			"GridColumn", "GridDataItem", "GridTableView", "GridSelection", "RadAIPrompt", "RadChip", "RadGantt", "RadSpreadsheet", "RadAIPrompt", "RadAIPromptViews", "RadKendoChart", "kendo"$end$
+		};
+		
+		string _startPath;
+		public string ProjectUrl
+        {
+			get
+			{
+				return _startPath;
+			}
+			set
+			{
+				_startPath = value;
+			}
+		}
+
+		bool _enableDebugOutput = true;
+		public bool EnableDebugOutput
+		{
+			get
+			{
+				return _enableDebugOutput;
+			}
+			set
+			{
+				_enableDebugOutput = value;
+			}
+		}
+
+		string _defaultNamespace;
+		public string DefaultNamespace
+		{
+			get
+			{
+				return _defaultNamespace ?? "Telerik.Web.UI";
+			}
+			set
+			{
+				_defaultNamespace = value;
+			}
+		}
+
+		string _scriptsAssembly;
+		public string ScriptsAssembly
+		{
+			get
+			{
+				return _scriptsAssembly ?? "Telerik.Web.UI";
+			}
+			set
+			{
+				_scriptsAssembly = value;
+			}
+		}
+
+		List<ScriptReference> _registeredScripts = new List<ScriptReference>();
+		public List<ScriptReference> RegisteredScripts
+		{
+			get { return _registeredScripts; }
+		}
+
+		protected override void OnResolveScriptReference(ScriptReferenceEventArgs e)
+		{
+			base.OnResolveScriptReference(e);
+
+			if (EnableDebugOutput)
+			{
+				if (e.Script.Assembly.StartsWith(ScriptsAssembly))
+				{
+					e.Script.Path = GetScriptPath(e.Script.Name);
+				}
+			}
+
+			ScriptReference existingScript = RegisteredScripts.Find(
+				delegate(ScriptReference s) { return s.Name == e.Script.Name && s.Assembly == e.Script.Assembly; });
+
+			// Filter duplicates and MS AJAX scripts (no assembly)
+			if (e.Script.Assembly != string.Empty && existingScript == null)
+				RegisteredScripts.Add(e.Script);
+		}
+
+		private string GetScriptPath(string scriptName)
+		{
+			if (scriptName.StartsWith(DefaultNamespace))
+			{
+				scriptName = scriptName.Remove(0, DefaultNamespace.Length + 1);
+			}
+			
+			var tokens = new Queue<string>(scriptName.Split('.'));
+			StringBuilder sb = new StringBuilder();
+
+			while (tokens.Count > 0 && !controlsWithDots.Contains(tokens.Peek()))
+			{
+				sb.AppendFormat("{0}/", tokens.Dequeue());
+			}
+			sb.Append(ConnectTheDots(tokens));
+
+			string scriptPath = sb.ToString().Replace("/js", ".js").TrimEnd('.', '/');
+
+			if (ProjectUrl == null)
+			{
+				return scriptPath;
+			}
+			return string.Concat(EndWithSlash(ProjectUrl), scriptPath);
+		}
+
+		private string ConnectTheDots(IEnumerable<string> tokens)
+		{
+			return String.Join(".", tokens);
+		}
+
+		private string EndWithSlash(string url)
+		{
+			if (string.IsNullOrEmpty(url))
+			{
+				return string.Empty;
+			}
+			if (url.EndsWith("/"))
+			{
+				return url;
+			}
+			return string.Concat(url, "/");
+		}
+	}
+}]]></Code>
+      <Imports>
+        <Import>
+          <Namespace>System</Namespace>
+        </Import>
+        <Import>
+          <Namespace>System.Collections.Generic</Namespace>
+        </Import>
+        <Import>
+          <Namespace>System.Text</Namespace>
+        </Import>
+        <Import>
+          <Namespace>System.Web.UI</Namespace>
+        </Import>
+      </Imports>
+    </Snippet>
+  </CodeSnippet>
+</CodeSnippets>
